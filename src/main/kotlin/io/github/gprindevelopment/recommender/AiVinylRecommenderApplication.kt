@@ -1,4 +1,4 @@
-package io.github.gpr_indevelopment.ai_vinyl_recommender
+package io.github.gprindevelopment.recommender
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
