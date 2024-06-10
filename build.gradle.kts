@@ -19,6 +19,8 @@ repositories {
 }
 
 dependencies {
+	implementation("dev.langchain4j:langchain4j-ollama:0.31.0")
+	implementation("org.testcontainers:ollama:1.19.8")
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.springframework.boot:spring-boot-starter")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
