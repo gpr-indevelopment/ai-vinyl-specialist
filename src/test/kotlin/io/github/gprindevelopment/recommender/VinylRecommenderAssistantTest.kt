@@ -31,6 +31,7 @@ class VinylRecommenderAssistantTest {
             return String.format("http://%s:%d", ollamaContainer.host, ollamaContainer.firstMappedPort)
         }
 
+        @JvmStatic
         @DynamicPropertySource
         fun configureProperties(registry: DynamicPropertyRegistry) {
             registry.add("langchain4j.ollama.streaming-chat-model.base-url") { containerBaseUrl() }
