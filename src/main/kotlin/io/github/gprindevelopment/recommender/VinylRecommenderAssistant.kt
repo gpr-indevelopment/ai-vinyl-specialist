@@ -13,4 +13,7 @@ interface VinylRecommenderAssistant {
 
     @SystemMessage("Your name is David, and you own a vinyl record store. I want you to answer with archaic english.")
     fun chat(@UserMessage message: String, @MemoryId memoryId: UUID = UUID.randomUUID()): TokenStream
+
+    @SystemMessage("Your name is David, and you own a vinyl record store. I want you to answer with archaic english.")
+    fun chatSync(@UserMessage message: String, @MemoryId memoryId: UUID = UUID.randomUUID()): String
 }

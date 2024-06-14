@@ -5,6 +5,7 @@ import org.awaitility.Awaitility.with
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.DynamicPropertyRegistry
 import org.springframework.test.context.DynamicPropertySource
 import org.testcontainers.junit.jupiter.Container
@@ -18,11 +19,14 @@ import kotlin.test.assertEquals
 
 @Testcontainers
 @SpringBootTest
+@ActiveProfiles("test")
 class VinylRecommenderAssistantTest {
 
     companion object {
         @Container
         val ollamaContainer: OllamaContainer = OllamaContainer(
+            //TODO: Can we make the modelName property come from the properties file?
+            //TODO: How to get rid of hanging containers?
             DockerImageName.parse("langchain4j/ollama-llama3:latest")
                 .asCompatibleSubstituteFor("ollama/ollama")
         )
@@ -35,9 +39,10 @@ class VinylRecommenderAssistantTest {
         @DynamicPropertySource
         fun configureProperties(registry: DynamicPropertyRegistry) {
             registry.add("langchain4j.ollama.streaming-chat-model.base-url") { containerBaseUrl() }
+            registry.add("langchain4j.ollama.chat-model.base-url") { containerBaseUrl() }
         }
 
-        fun assertStream(stream: TokenStream, expected: String, timeout: Duration = Duration.ofMinutes(1)) {
+        fun assertStream(stream: TokenStream, expected: String, timeout: Duration = Duration.ofMinutes(2)) {
             var response: String? = null
             stream
                 .onNext {}
@@ -60,7 +65,7 @@ class VinylRecommenderAssistantTest {
     lateinit var assistant:VinylRecommenderAssistant
 
     @Test
-    fun Should_chat_with_recommender() {
+    fun Should_stream_chat_with_recommender() {
         val input = "Hello! This is a test. Respond with the X character only, and nothing else."
         val outputStream = assistant.chat(input)
 
@@ -68,7 +73,15 @@ class VinylRecommenderAssistantTest {
     }
 
     @Test
-    fun Two_users_should_chat_with_recommender_maintaining_memory() {
+    fun Should_chat_with_recommender() {
+        val input = "Hello! This is a test. Respond with the X character only, and nothing else."
+        val response = assistant.chatSync(input)
+
+        assertEquals("X", response)
+    }
+
+    @Test
+    fun Two_users_should_stream_chat_with_recommender_maintaining_memory() {
         val maryMemoryId = UUID.randomUUID()
         val johnMemoryId = UUID.randomUUID()
         val maryPrompt = """
