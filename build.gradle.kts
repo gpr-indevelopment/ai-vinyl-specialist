@@ -19,6 +19,7 @@ repositories {
 }
 
 dependencies {
+	implementation("org.springframework.boot:spring-boot-starter-websocket")
 	implementation("dev.langchain4j:langchain4j-spring-boot-starter:0.31.0")
 	implementation("dev.langchain4j:langchain4j-ollama-spring-boot-starter:0.31.0")
 	implementation("org.springframework.boot:spring-boot-starter-web")
