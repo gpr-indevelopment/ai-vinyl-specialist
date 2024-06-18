@@ -1,5 +1,6 @@
 package io.github.gprindevelopment.recommender
 
+import org.awaitility.Awaitility.with
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -8,8 +9,8 @@ import org.springframework.web.socket.TextMessage
 import org.springframework.web.socket.WebSocketSession
 import org.springframework.web.socket.client.standard.StandardWebSocketClient
 import org.springframework.web.socket.handler.TextWebSocketHandler
-import kotlin.test.assertNotNull
-
+import java.time.Duration
+import kotlin.test.assertEquals
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class ChatMessageHandlerIT {
@@ -22,14 +23,21 @@ class ChatMessageHandlerIT {
 
     @Test
     fun Should_successfully_communicate_through_websockets() {
-        val session = StandardWebSocketClient().execute(TestWsHandler(), "ws://localhost:$port/chat")
+        val messages = mutableListOf<String>()
+        val session = StandardWebSocketClient().execute(TestWsHandler(messages), "ws://localhost:$port/chat")
             .join()
         session.sendMessage(TextMessage("Hello"))
+        with()
+            .atMost(Duration.ofSeconds(10))
+            .await()
+            .untilAsserted {
+                assertEquals(1, messages.size)
+            }
     }
 
-    private class TestWsHandler: TextWebSocketHandler() {
+    private class TestWsHandler(val messages: MutableList<String>): TextWebSocketHandler() {
         override fun handleTextMessage(session: WebSocketSession, message: TextMessage) {
-            assertNotNull(message.payload)
+            messages.add(message.payload)
         }
     }
 }
