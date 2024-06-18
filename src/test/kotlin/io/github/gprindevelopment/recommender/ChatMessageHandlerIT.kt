@@ -31,7 +31,7 @@ class ChatMessageHandlerIT {
             .atMost(Duration.ofSeconds(10))
             .await()
             .untilAsserted {
-                assertEquals(1, messages.size)
+                assertEquals(2, messages.size)
             }
     }
 
