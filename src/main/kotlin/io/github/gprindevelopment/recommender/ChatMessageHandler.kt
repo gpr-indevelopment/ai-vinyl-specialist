@@ -6,7 +6,7 @@ import org.springframework.web.socket.WebSocketSession
 import org.springframework.web.socket.handler.TextWebSocketHandler
 
 @Component
-class ChatMessageHandler: TextWebSocketHandler() {
+class ChatMessageHandler(val assistant: VinylRecommenderAssistant): TextWebSocketHandler() {
 
     override fun afterConnectionEstablished(session: WebSocketSession) {
         super.afterConnectionEstablished(session)
@@ -14,6 +14,10 @@ class ChatMessageHandler: TextWebSocketHandler() {
     }
 
     override fun handleTextMessage(session: WebSocketSession, message: TextMessage) {
-        session.sendMessage(TextMessage("Foo bar"))
+        assistant.chat(message.payload)
+            .onNext {}
+            .onComplete { modelResponse -> session.sendMessage(TextMessage(modelResponse.content().text())) }
+            .ignoreErrors()
+            .start()
     }
 }
