@@ -7,7 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest
 class AiVinylRecommenderApplicationTests {
 
 	@Test
-	fun contextLoads() {
+	fun `Context should load successfully`() {
 	}
 
 }

@@ -35,7 +35,7 @@ class ChatMessageHandlerIT {
     lateinit var assistant: VinylRecommenderAssistant
 
     @Test
-    fun Should_successfully_communicate_through_websockets() {
+    fun `Should successfully communicate through websockets`() {
         val inputMessage = "Hello!"
         val expectedResponse = "Hello back!"
         val handler = TestWsHandler()

@@ -65,7 +65,7 @@ class VinylRecommenderAssistantTest {
     lateinit var assistant:VinylRecommenderAssistant
 
     @Test
-    fun Should_stream_chat_with_recommender() {
+    fun `Should stream chat with recommender`() {
         val input = "Hello! This is a test. Respond with the X character only, and nothing else."
         val outputStream = assistant.chat(input)
 
@@ -73,7 +73,7 @@ class VinylRecommenderAssistantTest {
     }
 
     @Test
-    fun Should_chat_with_recommender() {
+    fun `Should chat with recommender`() {
         val input = "Hello! This is a test. Respond with the X character only, and nothing else."
         val response = assistant.chatSync(input)
 
@@ -81,7 +81,7 @@ class VinylRecommenderAssistantTest {
     }
 
     @Test
-    fun Two_users_should_stream_chat_with_recommender_maintaining_memory() {
+    fun `Two users should stream chat with recommender maintaining memory`() {
         val maryMemoryId = UUID.randomUUID()
         val johnMemoryId = UUID.randomUUID()
         val maryPrompt = """
