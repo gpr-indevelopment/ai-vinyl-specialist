@@ -18,7 +18,14 @@ repositories {
 	mavenCentral()
 }
 
+dependencyManagement {
+	imports {
+		mavenBom("org.springframework.cloud:spring-cloud-dependencies:2023.0.2")
+	}
+}
+
 dependencies {
+	implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
 	implementation("org.springframework.boot:spring-boot-starter-websocket")
 	implementation("dev.langchain4j:langchain4j-spring-boot-starter:0.31.0")
 	implementation("dev.langchain4j:langchain4j-ollama-spring-boot-starter:0.31.0")
