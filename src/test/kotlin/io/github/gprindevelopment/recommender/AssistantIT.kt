@@ -1,9 +1,7 @@
 package io.github.gprindevelopment.recommender
 
 import dev.langchain4j.service.TokenStream
-import org.awaitility.Awaitility.with
-import org.junit.jupiter.api.Test
-import org.springframework.beans.factory.annotation.Autowired
+import org.awaitility.Awaitility
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.DynamicPropertyRegistry
@@ -13,14 +11,12 @@ import org.testcontainers.junit.jupiter.Testcontainers
 import org.testcontainers.ollama.OllamaContainer
 import org.testcontainers.utility.DockerImageName
 import java.time.Duration
-import java.util.*
 import kotlin.test.assertEquals
-
 
 @Testcontainers
 @SpringBootTest
 @ActiveProfiles("test")
-class BasicAssistantTest {
+class AssistantIT {
 
     companion object {
         @Container
@@ -50,55 +46,14 @@ class BasicAssistantTest {
                 // A bug in langchain4j-ollama 0.31 causes assertion errors in the onComplete callback to be ignored, even when providing an onError callback
                 .ignoreErrors()
                 .start()
-            with()
+            Awaitility.with()
                 .pollInterval(Duration.ofSeconds(5))
                 .and()
                 .atMost(timeout)
                 .await()
                 .untilAsserted {
-                assertEquals(expected, response)
-            }
+                    assertEquals(expected, response)
+                }
         }
-    }
-
-    @Autowired
-    lateinit var assistant:BasicAssistant
-
-    @Test
-    fun `Should stream chat with recommender`() {
-        val input = "Hello! This is a test. Respond with the X character only, and nothing else."
-        val outputStream = assistant.chat(input)
-
-        assertStream(outputStream, "X")
-    }
-
-    @Test
-    fun `Should chat with recommender`() {
-        val input = "Hello! This is a test. Respond with the X character only, and nothing else."
-        val response = assistant.chatSync(input)
-
-        assertEquals("X", response)
-    }
-
-    @Test
-    fun `Two users should stream chat with recommender maintaining memory`() {
-        val maryMemoryId = UUID.randomUUID()
-        val johnMemoryId = UUID.randomUUID()
-        val maryPrompt = """
-               Hello! I am Mary, and this is a test. 
-               You must respond this message with a single X character only, and nothing else.
-               Then, I will send you a new message with the Y character,
-               and you must respond with the Z character, and nothing else.
-            """
-        val johnPrompt = """
-               Hello! I am John, and this is a test. 
-               You must respond this message with a single A character only, and nothing else.
-               Then, I will send you a new message with the B character,
-               and you must respond with the C character, and nothing else.
-            """
-        assertStream(assistant.chat(maryPrompt, maryMemoryId), "X")
-        assertStream(assistant.chat(johnPrompt, johnMemoryId), "A")
-        assertStream(assistant.chat("Y", maryMemoryId), "Z")
-        assertStream(assistant.chat("B", johnMemoryId), "C")
     }
 }
