@@ -10,6 +10,7 @@ import org.springframework.test.context.DynamicPropertyRegistry
 import org.springframework.test.context.DynamicPropertySource
 import org.testcontainers.junit.jupiter.Testcontainers
 import java.time.Duration
+import java.util.function.Consumer
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
@@ -38,25 +39,18 @@ class AssistantIT {
     }
 
     fun assertStream(stream: TokenStream, expected: String, timeout: Duration = Duration.ofMinutes(2)) {
-        var response: String? = null
-        stream
-            .onNext {}
-            .onComplete { modelResponse -> response = modelResponse.content().text() }
-            // A bug in langchain4j-ollama 0.31 causes assertion errors in the onComplete callback to be ignored, even when providing an onError callback
-            .ignoreErrors()
-            .start()
-        Awaitility.with()
-            .pollInterval(Duration.ofSeconds(5))
-            .and()
-            .atMost(timeout)
-            .await()
-            .untilAsserted {
-                assertEquals(expected, response)
-            }
+        assertStreamInternal(stream, { response ->
+            assertEquals(expected, response)
+        }, timeout)
     }
 
-    //TODO: Can we unify the assertion methods?
     fun assertStreamContainsOneOf(stream: TokenStream, expected: List<String>, timeout: Duration = Duration.ofMinutes(2)) {
+        assertStreamInternal(stream, { response ->
+            assertTrue(expected.any { response.contains(it) })
+        }, timeout)
+    }
+
+    private fun assertStreamInternal(stream: TokenStream, responseConsumer: Consumer<String>, timeout: Duration = Duration.ofMinutes(2)) {
         var response: String? = null
         stream
             .onNext { }
@@ -70,7 +64,7 @@ class AssistantIT {
             .await()
             .untilAsserted {
                 assertNotNull(response)
-                assertTrue(expected.any { response!!.contains(it) })
+                responseConsumer.accept(response!!)
             }
     }
 }
