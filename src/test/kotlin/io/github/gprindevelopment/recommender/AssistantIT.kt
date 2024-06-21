@@ -12,6 +12,8 @@ import org.testcontainers.ollama.OllamaContainer
 import org.testcontainers.utility.DockerImageName
 import java.time.Duration
 import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
 
 @Testcontainers
 @SpringBootTest
@@ -53,6 +55,25 @@ class AssistantIT {
                 .await()
                 .untilAsserted {
                     assertEquals(expected, response)
+                }
+        }
+
+        //TODO: Can we unify the assertion methods?
+        fun assertStreamContainsOneOf(stream: TokenStream, expected: List<String>, timeout: Duration = Duration.ofMinutes(2)) {
+            var response: String? = null
+            stream
+                .onNext { }
+                .onComplete { modelResponse -> response = modelResponse.content().text() }
+                .ignoreErrors()
+                .start()
+            Awaitility.with()
+                .pollInterval(Duration.ofSeconds(5))
+                .and()
+                .atMost(timeout)
+                .await()
+                .untilAsserted {
+                    assertNotNull(response)
+                    assertTrue(expected.any { response!!.contains(it) })
                 }
         }
     }
