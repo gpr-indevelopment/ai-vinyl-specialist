@@ -20,7 +20,7 @@ import kotlin.test.assertEquals
 @Testcontainers
 @SpringBootTest
 @ActiveProfiles("test")
-class VinylRecommenderAssistantTest {
+class BasicAssistantTest {
 
     companion object {
         @Container
@@ -62,7 +62,7 @@ class VinylRecommenderAssistantTest {
     }
 
     @Autowired
-    lateinit var assistant:VinylRecommenderAssistant
+    lateinit var assistant:BasicAssistant
 
     @Test
     fun `Should stream chat with recommender`() {

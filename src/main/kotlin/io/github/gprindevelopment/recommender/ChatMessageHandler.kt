@@ -6,7 +6,7 @@ import org.springframework.web.socket.WebSocketSession
 import org.springframework.web.socket.handler.TextWebSocketHandler
 
 @Component
-class ChatMessageHandler(val assistant: VinylRecommenderAssistant): TextWebSocketHandler() {
+class ChatMessageHandler(val assistant: BasicAssistant): TextWebSocketHandler() {
 
     override fun afterConnectionEstablished(session: WebSocketSession) {
         super.afterConnectionEstablished(session)

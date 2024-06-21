@@ -32,7 +32,7 @@ class ChatMessageHandlerIT {
     lateinit var chatMessageHandler: ChatMessageHandler;
 
     @MockkBean
-    lateinit var assistant: VinylRecommenderAssistant
+    lateinit var assistant: BasicAssistant
 
     @Test
     fun `Should successfully communicate through websockets`() {
