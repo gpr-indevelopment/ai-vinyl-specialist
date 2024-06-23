@@ -4,7 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty
 
 data class DiscogsCollectionResponse(
     val pagination: Pagination,
-    val releases: List<Release>
+    @JsonProperty("releases")
+    val releases: List<ReleaseResponse>
 )
 
 data class Pagination(
@@ -20,7 +21,7 @@ data class Urls(
     val next: String
 )
 
-data class Release(
+data class ReleaseResponse(
     val id: Int,
     @JsonProperty("basic_information") val basicInformation: BasicInformation
 )
@@ -29,18 +30,31 @@ data class BasicInformation(
     val id: Int,
     val title: String,
     val year: Int,
-    val artists: List<Artist>,
-    val labels: List<Label>,
+    @JsonProperty("artists")
+    val artists: List<ArtistResponse>,
+    @JsonProperty("labels")
+    val labels: List<LabelResponse>,
     val genres: List<String>,
-    val styles: List<String>
+    val styles: List<String>,
+    val formats: List<FormatResponse>
 )
 
-data class Artist(
+data class ArtistResponse(
     val id: Int,
     val name: String
 )
 
-data class Label(
+data class LabelResponse(
     val name: String,
     val id: Int
 )
+
+data class FormatResponse(
+    val name: String,
+    val qty: String,
+    val descriptions: List<String>
+) {
+    fun isVinyl(): Boolean {
+        return this.descriptions.equals("Vinyl")
+    }
+}
