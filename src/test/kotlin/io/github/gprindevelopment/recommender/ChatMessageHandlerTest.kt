@@ -1,43 +1,33 @@
 package io.github.gprindevelopment.recommender
 
 import io.mockk.*
+import io.mockk.impl.annotations.InjectMockKs
+import io.mockk.impl.annotations.MockK
+import io.mockk.junit5.MockKExtension
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
-import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.provider.ValueSource
+import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.web.socket.WebSocketSession
-import java.net.URI
-import kotlin.test.assertEquals
 
+@ExtendWith(MockKExtension::class)
 class ChatMessageHandlerTest {
 
-    val chatMessageHandler: ChatMessageHandler = ChatMessageHandler(mockk())
+    @InjectMockKs
+    private lateinit var chatMessageHandler: ChatMessageHandler
 
-    @ParameterizedTest
-    @ValueSource(strings = ["ws://localhost:8080/chat", "ws://localhost:8080/chat/1234", "ws://localhost:8080/chat/1234?sessionid=1234"])
-    fun `Should not start websocket without a session ID`() {
-        val session = mockk<WebSocketSession>()
+    @MockK
+    private lateinit var wsRecommenderService: WsRecommenderService
 
-        every { session.uri } returns URI.create("ws://localhost:8080/chat")
-        assertThrows<IllegalArgumentException> { chatMessageHandler.afterConnectionEstablished(session) }
-    }
+    @MockK
+    private lateinit var assistant: BasicAssistant
 
     @Test
-    fun `Should not start websocket without a URI`() {
+    fun `Should delegate WebSocket setup to service`() {
         val session = mockk<WebSocketSession>()
 
-        every { session.uri } returns null
-        assertThrows<IllegalArgumentException> { chatMessageHandler.afterConnectionEstablished(session) }
-    }
-
-    @Test
-    fun `Should successfully start a websocket session`() {
-        val session = mockk<WebSocketSession>()
-
-        every { session.uri } returns URI.create("ws://localhost:8080/chat?sessionId=1234")
-        every { session.attributes } returns mutableMapOf()
+        every { wsRecommenderService.setupSession(session) } just runs
         every { session.sendMessage(any()) } just runs
+
         chatMessageHandler.afterConnectionEstablished(session)
-        assertEquals("1234", session.attributes["sessionId"])
+        verify { wsRecommenderService.setupSession(session) }
     }
 }
