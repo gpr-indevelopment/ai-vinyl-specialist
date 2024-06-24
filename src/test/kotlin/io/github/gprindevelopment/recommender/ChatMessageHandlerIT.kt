@@ -8,6 +8,7 @@ import dev.langchain4j.service.OnError
 import dev.langchain4j.service.OnStart
 import dev.langchain4j.service.TokenStream
 import io.mockk.every
+import io.mockk.mockk
 import org.awaitility.Awaitility.with
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -34,14 +35,18 @@ class ChatMessageHandlerIT {
     @MockkBean
     lateinit var assistant: BasicAssistant
 
+    @MockkBean
+    lateinit var discogsVinylRecommenderService: DiscogsVinylRecommenderService
+
     @Test
     fun `Should successfully communicate through websockets`() {
         val inputMessage = "Hello!"
         val expectedResponse = "Hello back!"
         val handler = TestWsHandler()
         every { assistant.chat(inputMessage, any()) } returns TestTokenStream(expectedResponse)
+        every { discogsVinylRecommenderService.startRecommender(any()) } returns mockk()
 
-        val session = StandardWebSocketClient().execute(handler, "ws://localhost:$port/chat?sessionId=1234")
+        val session = StandardWebSocketClient().execute(handler, "ws://localhost:$port/chat?sessionId=1234&discogsUser=gabriel")
             .join()
         session.sendMessage(TextMessage(inputMessage))
         with()

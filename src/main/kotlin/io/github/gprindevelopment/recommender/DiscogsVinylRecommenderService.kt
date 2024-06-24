@@ -11,6 +11,7 @@ class DiscogsVinylRecommenderService(
 ) {
 
     fun startRecommender(user: DiscogsUser): RecommenderSession {
+        //TODO: What if nothing is found in the collection?
         val collectionResponse = discogsClient.getCollection(user.username)
         val vinylRecords = collectionResponse.toVinylRecords()
         return RecommenderSession(
