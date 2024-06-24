@@ -1,5 +1,6 @@
 package io.github.gprindevelopment.recommender
 
+import dev.langchain4j.service.TokenStream
 import org.springframework.stereotype.Service
 import java.util.UUID
 
@@ -17,6 +18,10 @@ class DiscogsVinylRecommenderService(
             user,
             vinylRecords
         )
+    }
+
+    fun chat(session: RecommenderSession, message: String): TokenStream {
+        return assistant.chat(message, session.collection, session.memoryId)
     }
 }
 
