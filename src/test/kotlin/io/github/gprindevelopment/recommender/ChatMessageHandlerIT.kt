@@ -1,12 +1,6 @@
 package io.github.gprindevelopment.recommender
 
 import com.ninjasquad.springmockk.MockkBean
-import dev.langchain4j.data.message.AiMessage
-import dev.langchain4j.model.output.Response
-import dev.langchain4j.service.OnCompleteOrOnError
-import dev.langchain4j.service.OnError
-import dev.langchain4j.service.OnStart
-import dev.langchain4j.service.TokenStream
 import io.mockk.every
 import io.mockk.mockk
 import org.awaitility.Awaitility.with
@@ -19,7 +13,6 @@ import org.springframework.web.socket.WebSocketSession
 import org.springframework.web.socket.client.standard.StandardWebSocketClient
 import org.springframework.web.socket.handler.TextWebSocketHandler
 import java.time.Duration
-import java.util.function.Consumer
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
 
@@ -45,6 +38,7 @@ class ChatMessageHandlerIT {
         val handler = TestWsHandler()
         every { assistant.chat(inputMessage, any()) } returns TestTokenStream(expectedResponse)
         every { discogsVinylRecommenderService.startRecommender(any()) } returns mockk()
+        every { discogsVinylRecommenderService.chat(any(), any()) } returns TestTokenStream(expectedResponse)
 
         val session = StandardWebSocketClient().execute(handler, "ws://localhost:$port/chat?sessionId=1234&discogsUser=gabriel")
             .join()
@@ -64,32 +58,6 @@ class ChatMessageHandlerIT {
 
         override fun handleTextMessage(session: WebSocketSession, message: TextMessage) {
             messagesReceived.add(message.payload)
-        }
-    }
-
-    private class TestTokenStream(val message: String): TokenStream, OnCompleteOrOnError, OnStart, OnError {
-
-        var onCompleteCallback: Consumer<Response<AiMessage>>? = null
-
-        override fun onNext(tokenHandler: Consumer<String>?): OnCompleteOrOnError {
-            return this
-        }
-
-        override fun onComplete(completionHandler: Consumer<Response<AiMessage>>?): OnError {
-            this.onCompleteCallback = completionHandler
-            return this
-        }
-
-        override fun ignoreErrors(): OnStart {
-            return this
-        }
-
-        override fun onError(errorHandler: Consumer<Throwable>?): OnStart {
-            return this
-        }
-
-        override fun start() {
-            onCompleteCallback?.accept(Response(AiMessage(message)))
         }
     }
 }

@@ -1,6 +1,7 @@
 package io.github.gprindevelopment.recommender
 
 import org.springframework.stereotype.Service
+import org.springframework.web.socket.TextMessage
 import org.springframework.web.socket.WebSocketSession
 import org.springframework.web.util.UriComponentsBuilder
 import java.net.URI
@@ -18,6 +19,16 @@ class WsRecommenderService(
         val discogsUser = extractDiscogsUsername(uri) ?: throw IllegalArgumentException("Discogs user is required.")
         val recommenderSession = discogsRecommenderService.startRecommender(DiscogsUser(discogsUser))
         wsSession.attributes["recommenderSession"] = recommenderSession
+        chat("Hello!", wsSession, recommenderSession)
+    }
+
+    private fun chat(message: String, wsSession: WebSocketSession, recommenderSession: RecommenderSession) {
+        val stream = discogsRecommenderService.chat(recommenderSession, message)
+        //TODO: What to do with errors?
+        stream
+            .onNext { modelResponse -> wsSession.sendMessage(TextMessage(modelResponse)) }
+            .ignoreErrors()
+            .start()
     }
 
     private fun extractDiscogsUsername(uri: URI): String? {
