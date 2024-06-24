@@ -41,7 +41,7 @@ class ChatMessageHandlerIT {
         val handler = TestWsHandler()
         every { assistant.chat(inputMessage, any()) } returns TestTokenStream(expectedResponse)
 
-        val session = StandardWebSocketClient().execute(handler, "ws://localhost:$port/chat")
+        val session = StandardWebSocketClient().execute(handler, "ws://localhost:$port/chat?sessionId=1234")
             .join()
         session.sendMessage(TextMessage(inputMessage))
         with()
