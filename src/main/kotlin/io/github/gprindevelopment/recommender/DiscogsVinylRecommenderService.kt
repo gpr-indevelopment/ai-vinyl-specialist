@@ -1,9 +1,7 @@
 package io.github.gprindevelopment.recommender
 
-import dev.langchain4j.service.TokenStream
 import org.springframework.stereotype.Service
-
-data class DiscogsUser(val username: String)
+import java.util.UUID
 
 @Service
 class DiscogsVinylRecommenderService(
@@ -11,10 +9,14 @@ class DiscogsVinylRecommenderService(
     val assistant: VinylRecommenderAssistant
 ) {
 
-    fun startRecommender(user: DiscogsUser): TokenStream {
+    fun startRecommender(user: DiscogsUser): RecommenderSession {
         val collectionResponse = discogsClient.getCollection(user.username)
         val vinylRecords = collectionResponse.toVinylRecords()
-        return assistant.chat("Hello!", vinylRecords)
+        return RecommenderSession(
+            UUID.randomUUID(),
+            user,
+            vinylRecords
+        )
     }
 }
 

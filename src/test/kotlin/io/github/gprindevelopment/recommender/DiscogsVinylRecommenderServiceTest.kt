@@ -1,14 +1,13 @@
 package io.github.gprindevelopment.recommender
 
-import dev.langchain4j.service.TokenStream
 import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
-import io.mockk.mockk
 import org.junit.jupiter.api.extension.ExtendWith
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
 
 @ExtendWith(MockKExtension::class)
 class DiscogsVinylRecommenderServiceTest {
@@ -23,15 +22,15 @@ class DiscogsVinylRecommenderServiceTest {
     lateinit var assistant: VinylRecommenderAssistant
 
     @Test
-    fun `Should successfully start recommender chat`() {
+    fun `Should successfully start recommender session`() {
         val user = DiscogsUser("some-user")
-        val expectedStream = mockk<TokenStream>()
         every { discogsClient.getCollection(user.username) } returns DiscogsResponseMother().discogsResponse()
-        every { assistant.chat("Hello!", listOf(VinylRecord("Abbey Road", "The Beatles"),
-            VinylRecord("Let It Be", "The Beatles")), any()) } returns expectedStream
 
-        val actual = discogsVinylRecommenderService.startRecommender(user)
-        assertEquals(expectedStream, actual)
+        val session = discogsVinylRecommenderService.startRecommender(user)
+        assertEquals(listOf(VinylRecord("Abbey Road", "The Beatles"),
+            VinylRecord("Let It Be", "The Beatles")), session.collection)
+        assertEquals(user, session.user)
+        assertNotNull(session.memoryId)
     }
 }
 
