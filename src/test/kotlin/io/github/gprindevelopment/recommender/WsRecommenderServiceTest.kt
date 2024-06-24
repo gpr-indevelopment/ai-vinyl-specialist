@@ -63,7 +63,6 @@ class WsRecommenderServiceTest {
 
         every { session.uri } returns URI.create("ws://localhost:8080/chat?sessionId=${expectedSessionId}&discogsUser=${expectedDiscogsUser.username}")
         every { session.attributes } returns mutableMapOf()
-        every { session.sendMessage(any()) } just runs
         every { discogsRecommenderService.startRecommender(expectedDiscogsUser) } returns expectedRecommenderSession
 
         wsRecommenderService.setupSession(session)

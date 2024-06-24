@@ -25,7 +25,6 @@ class ChatMessageHandlerTest {
         val session = mockk<WebSocketSession>()
 
         every { wsRecommenderService.setupSession(session) } just runs
-        every { session.sendMessage(any()) } just runs
 
         chatMessageHandler.afterConnectionEstablished(session)
         verify { wsRecommenderService.setupSession(session) }

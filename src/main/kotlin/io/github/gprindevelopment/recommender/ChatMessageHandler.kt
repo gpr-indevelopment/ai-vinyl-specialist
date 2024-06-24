@@ -14,7 +14,6 @@ class ChatMessageHandler(
     override fun afterConnectionEstablished(session: WebSocketSession) {
         service.setupSession(session)
         super.afterConnectionEstablished(session)
-        session.sendMessage(TextMessage("WebSocket connection is accepting requests."))
     }
 
     override fun handleTextMessage(session: WebSocketSession, message: TextMessage) {
