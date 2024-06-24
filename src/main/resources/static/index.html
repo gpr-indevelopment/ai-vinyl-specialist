@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        #aiResponses {
+            width: 100%;
+            height: 200px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            overflow-y: scroll;
+        }
+        #usernameInput, #promptInput {
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+    <h1>Discogs AI Chat</h1>
+    <input id="usernameInput" type="text" placeholder="Enter Discogs username">
+    <div id="aiResponses"></div>
+    <textarea id="promptInput" rows="4" placeholder="Enter your prompt here"></textarea>
+    <button id="sendButton">Send</button>
+
+    <script>
+        document.getElementById('promptInput').disabled = true;
+
+        document.getElementById('usernameInput').addEventListener('keydown', function(event) {
+            if (event.keyCode === 13) {
+                event.preventDefault();
+                var socket = new WebSocket('ws://localhost:8080/chat?sessionId=1234&discogsUser=' + this.value);
+                document.getElementById('usernameInput').disabled = true;
+                document.getElementById('promptInput').disabled = false;
+                socket.addEventListener('open', function (event) {
+                    console.log('WebSocket is open now.');
+                });
+
+                socket.addEventListener('message', function (event) {
+                    var aiResponsesDiv = document.getElementById('aiResponses');
+                    aiResponsesDiv.innerText += event.data;
+                });
+
+                document.getElementById('sendButton').addEventListener('click', function(event) {
+                    var prompt = document.getElementById('promptInput').value;
+                    socket.send(prompt);
+                    document.getElementById('promptInput').value = '';
+                })
+            }
+        });
+    </script>
+</body>
+</html>
