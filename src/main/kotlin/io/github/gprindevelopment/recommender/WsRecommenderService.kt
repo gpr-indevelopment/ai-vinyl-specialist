@@ -32,6 +32,7 @@ class WsRecommenderService(
         //TODO: What to do with errors?
         stream
             .onNext { modelResponse -> wsSession.sendMessage(TextMessage(modelResponse)) }
+            .onComplete { wsSession.sendMessage(TextMessage("EOS")) }
             .ignoreErrors()
             .start()
     }

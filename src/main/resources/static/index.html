@@ -48,7 +48,11 @@
 
                 socket.addEventListener('message', function (event) {
                     var aiResponsesDiv = document.getElementById('aiResponses');
-                    aiResponsesDiv.innerText += event.data;
+                    if (event.data === "EOS") {
+                        aiResponsesDiv.innerHTML += '<br><br>';
+                    } else {
+                        aiResponsesDiv.innerText += event.data;
+                    }
                 });
 
                 document.getElementById('sendButton').addEventListener('click', function(event) {
