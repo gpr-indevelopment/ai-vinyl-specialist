@@ -55,6 +55,6 @@ data class FormatResponse(
     val descriptions: List<String>
 ) {
     fun isVinyl(): Boolean {
-        return this.descriptions.equals("Vinyl")
+        return this.name.equals("vinyl", ignoreCase = true)
     }
 }

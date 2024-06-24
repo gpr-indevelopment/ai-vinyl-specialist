@@ -19,8 +19,8 @@ interface VinylRecommenderAssistant {
         You can also ask other things that you think are important. Then you can recommend.
          You must only make recommendations of records that are in the collection.
         
-        This is your vinyl collection. It is written in JSON format.
-        For each record, it contains info such as the title, year, artists, labels, genres, and styles.
+        This is your vinyl collection. It is a list of comma-separated records.
+        For each record contains info about the artist and the title.
         Collection:
         
         {{collection}}
