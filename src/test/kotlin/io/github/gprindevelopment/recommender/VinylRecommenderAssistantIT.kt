@@ -15,17 +15,17 @@ class VinylRecommenderAssistantIT: AssistantIT() {
 
     private data class Record(val artist: String, val title: String)
 
-    private val collection = listOf(
-        Record("The Police", "Zenyatta Mondatta"),
-        Record("Supertramp", "Paris"),
-        Record("Sting", "Bring On The Night"),
-        Record("Supertramp", "The Autobiography Of Supertramp"),
-        Record("Carpenters", "Carpenters"),
-        Record("Silk Sonic", "An Evening With Silk Sonic"),
-        Record("The Beatles", "Abbey Road"),
-        Record("The Beatles", "1962-1966"),
-        Record("The Beatles", "1967-1970"),
-        Record("The Beatles", "Let It Be")
+    private val vinylCollection = listOf(
+        VinylRecord("Zenyatta Mondatta", "The Police"),
+        VinylRecord("Paris", "Supertramp"),
+        VinylRecord("Bring On The Night", "Sting"),
+        VinylRecord("The Autobiography Of Supertramp", "Supertramp"),
+        VinylRecord("Carpenters", "Carpenters"),
+        VinylRecord("An Evening With Silk Sonic", "Silk Sonic"),
+        VinylRecord("Abbey Road", "The Beatles"),
+        VinylRecord("1962-1966", "The Beatles"),
+        VinylRecord("1967-1970", "The Beatles"),
+        VinylRecord("Let It Be", "The Beatles")
     )
 
     @Test
@@ -36,9 +36,8 @@ class VinylRecommenderAssistantIT: AssistantIT() {
             I am looking for some records that have a chill vibe.
             This is a test. You must answer with the recommended title only, nothing else.
         """.trimIndent()
-        val artistAndTitles = collection.map { "${it.artist}: ${it.title}" }
-        val titles = collection.map { it.title }
-        val response = assistant.chat(message, artistAndTitles.joinToString(", "))
+        val titles = vinylCollection.map { it.title }
+        val response = assistant.chat(message, vinylCollection)
         assertStreamContainsOneOf(response, titles, Duration.ofMinutes(5))
     }
 }

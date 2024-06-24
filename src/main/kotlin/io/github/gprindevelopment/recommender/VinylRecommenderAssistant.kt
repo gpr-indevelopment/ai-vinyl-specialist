@@ -19,17 +19,15 @@ interface VinylRecommenderAssistant {
         You can also ask other things that you think are important. Then you can recommend.
          You must only make recommendations of records that are in the collection.
         
-        This is your vinyl collection. It is a list of comma-separated records.
-        For each record contains info about the artist and the title.
+        This is your vinyl collection. Each record contains info about the artist and the title.
         Collection:
         
         {{collection}}
     """
     }
 
-    // Can we make a better abstraction on the format of the collection? How can callers know how the string looks?
     @SystemMessage(SYSTEM_MESSAGE)
     fun chat(@UserMessage message: String,
-             @V("collection") collection: String,
+             @V("collection") collection: List<VinylRecord>,
              @MemoryId memoryId: UUID = UUID.randomUUID()): TokenStream
 }

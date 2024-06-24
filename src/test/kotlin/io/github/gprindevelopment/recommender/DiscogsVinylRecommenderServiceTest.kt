@@ -27,7 +27,8 @@ class DiscogsVinylRecommenderServiceTest {
         val user = DiscogsUser("some-user")
         val expectedStream = mockk<TokenStream>()
         every { discogsClient.getCollection(user.username) } returns DiscogsResponseMother().discogsResponse()
-        every { assistant.chat("Hello!", "The Beatles: Abbey Road, The Beatles: Let It Be", any()) } returns expectedStream
+        every { assistant.chat("Hello!", listOf(VinylRecord("Abbey Road", "The Beatles"),
+            VinylRecord("Let It Be", "The Beatles")), any()) } returns expectedStream
 
         val actual = discogsVinylRecommenderService.startRecommender(user)
         assertEquals(expectedStream, actual)

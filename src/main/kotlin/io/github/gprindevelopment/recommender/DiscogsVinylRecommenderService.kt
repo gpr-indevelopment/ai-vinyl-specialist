@@ -14,7 +14,7 @@ class DiscogsVinylRecommenderService(
     fun startRecommender(user: DiscogsUser): TokenStream {
         val collectionResponse = discogsClient.getCollection(user.username)
         val vinylRecords = collectionResponse.toVinylRecords()
-        return assistant.chat("Hello!", vinylRecords.toCommaSeparatedList())
+        return assistant.chat("Hello!", vinylRecords)
     }
 }
 
@@ -22,8 +22,4 @@ private fun DiscogsCollectionResponse.toVinylRecords(): List<VinylRecord> {
     return this.releases
         .filter { it.basicInformation.formats.any { format -> format.isVinyl() } }
         .map { VinylRecord(it.basicInformation.title, it.basicInformation.artists.first().name) }
-}
-
-private fun List<VinylRecord>.toCommaSeparatedList(): String {
-    return this.joinToString(", ") { "${it.artist}: ${it.title}" }
 }
