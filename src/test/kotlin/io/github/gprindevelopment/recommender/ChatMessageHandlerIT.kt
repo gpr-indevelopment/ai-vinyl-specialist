@@ -43,7 +43,7 @@ class ChatMessageHandlerIT {
             .atMost(Duration.ofSeconds(10))
             .await()
             .untilAsserted {
-                assertEquals(1, handler.messagesReceived.size)
+                assertEquals(2, handler.messagesReceived.size)
                 assertContains(handler.messagesReceived, expectedResponse)
             }
     }

@@ -16,6 +16,6 @@ class ChatMessageHandler(
     }
 
     override fun handleTextMessage(session: WebSocketSession, message: TextMessage) {
-
+        service.chat(message.payload, session)
     }
 }

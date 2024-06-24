@@ -53,6 +53,24 @@ class WsRecommenderServiceTest {
     }
 
     @Test
+    fun `Should chat through websockets`() {
+        val inputString = "I want record recommendations!"
+        val wsSession = mockk<WebSocketSession>()
+        val expectedRecommenderSession = RecommenderSession(UUID.randomUUID(), DiscogsUser("gabriel"), listOf())
+        val expectedAiMessage = "I am an AI and I will recommend!"
+        val expectedChatStream = TestTokenStream(expectedAiMessage)
+
+        every { wsSession.attributes } returns mutableMapOf(
+            "recommenderSession" to expectedRecommenderSession
+        ) as Map<String, Any>
+        every { discogsRecommenderService.chat(expectedRecommenderSession, inputString) } returns expectedChatStream
+        every { wsSession.sendMessage(any()) } just runs
+
+        wsRecommenderService.chat(inputString, wsSession)
+        verify { wsSession.sendMessage(TextMessage(expectedAiMessage)) }
+    }
+
+    @Test
     fun `Should successfully start a websocket session`() {
         val session = mockk<WebSocketSession>()
         val expectedDiscogsUser = DiscogsUser("gabriel")

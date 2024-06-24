@@ -22,6 +22,11 @@ class WsRecommenderService(
         chat("Hello!", wsSession, recommenderSession)
     }
 
+    fun chat(message: String, wsSession: WebSocketSession) {
+        val recommenderSession = wsSession.attributes["recommenderSession"] as RecommenderSession
+        chat(message, wsSession, recommenderSession)
+    }
+
     private fun chat(message: String, wsSession: WebSocketSession, recommenderSession: RecommenderSession) {
         val stream = discogsRecommenderService.chat(recommenderSession, message)
         //TODO: What to do with errors?

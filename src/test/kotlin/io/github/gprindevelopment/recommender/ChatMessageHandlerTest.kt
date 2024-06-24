@@ -6,6 +6,7 @@ import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import org.springframework.web.socket.TextMessage
 import org.springframework.web.socket.WebSocketSession
 
 @ExtendWith(MockKExtension::class)
@@ -25,5 +26,15 @@ class ChatMessageHandlerTest {
 
         chatMessageHandler.afterConnectionEstablished(session)
         verify { wsRecommenderService.setupSession(session) }
+    }
+
+    @Test
+    fun `Should delegate new websocket messages to service`() {
+        val session = mockk<WebSocketSession>()
+        val message = TextMessage("Hello from websockets!")
+        every { wsRecommenderService.chat(any(), any()) } just runs
+
+        chatMessageHandler.handleMessage(session, message)
+        verify { wsRecommenderService.chat("Hello from websockets!", session) }
     }
 }
