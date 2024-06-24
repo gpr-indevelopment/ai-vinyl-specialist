@@ -26,9 +26,6 @@ class ChatMessageHandlerIT {
     lateinit var chatMessageHandler: ChatMessageHandler;
 
     @MockkBean
-    lateinit var assistant: BasicAssistant
-
-    @MockkBean
     lateinit var discogsVinylRecommenderService: DiscogsVinylRecommenderService
 
     @Test
@@ -36,7 +33,6 @@ class ChatMessageHandlerIT {
         val inputMessage = "Hello!"
         val expectedResponse = "Hello back!"
         val handler = TestWsHandler()
-        every { assistant.chat(inputMessage, any()) } returns TestTokenStream(expectedResponse)
         every { discogsVinylRecommenderService.startRecommender(any()) } returns mockk()
         every { discogsVinylRecommenderService.chat(any(), any()) } returns TestTokenStream(expectedResponse)
 
@@ -47,7 +43,7 @@ class ChatMessageHandlerIT {
             .atMost(Duration.ofSeconds(10))
             .await()
             .untilAsserted {
-                assertEquals(2, handler.messagesReceived.size)
+                assertEquals(1, handler.messagesReceived.size)
                 assertContains(handler.messagesReceived, expectedResponse)
             }
     }

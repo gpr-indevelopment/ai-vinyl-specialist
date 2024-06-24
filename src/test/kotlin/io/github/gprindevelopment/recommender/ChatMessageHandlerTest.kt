@@ -17,9 +17,6 @@ class ChatMessageHandlerTest {
     @MockK
     private lateinit var wsRecommenderService: WsRecommenderService
 
-    @MockK
-    private lateinit var assistant: BasicAssistant
-
     @Test
     fun `Should delegate WebSocket setup to service`() {
         val session = mockk<WebSocketSession>()

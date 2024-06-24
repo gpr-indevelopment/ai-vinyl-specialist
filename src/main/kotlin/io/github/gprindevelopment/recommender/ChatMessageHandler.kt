@@ -7,7 +7,6 @@ import org.springframework.web.socket.handler.TextWebSocketHandler
 
 @Component
 class ChatMessageHandler(
-    val assistant: BasicAssistant,
     val service: WsRecommenderService): TextWebSocketHandler() {
 
     //TODO: Can these illegal argument exceptions become custom websocket exceptions?
@@ -17,10 +16,6 @@ class ChatMessageHandler(
     }
 
     override fun handleTextMessage(session: WebSocketSession, message: TextMessage) {
-        assistant.chat(message.payload)
-            .onNext {}
-            .onComplete { modelResponse -> session.sendMessage(TextMessage(modelResponse.content().text())) }
-            .ignoreErrors()
-            .start()
+
     }
 }
