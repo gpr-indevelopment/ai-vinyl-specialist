@@ -7,8 +7,6 @@ import io.mockk.junit5.MockKExtension
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
-import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.provider.ValueSource
 import org.springframework.web.socket.TextMessage
 import org.springframework.web.socket.WebSocketSession
 import java.net.URI
@@ -24,15 +22,6 @@ class WsRecommenderServiceTest {
 
     @MockK
     private lateinit var discogsRecommenderService: DiscogsVinylRecommenderService
-
-    @ParameterizedTest
-    @ValueSource(strings = ["ws://localhost:8080/chat", "ws://localhost:8080/chat/1234", "ws://localhost:8080/chat/1234?sessionid=1234"])
-    fun `Should not start websocket without a session ID`() {
-        val session = mockk<WebSocketSession>()
-
-        every { session.uri } returns URI.create("ws://localhost:8080/chat")
-        assertThrows<IllegalArgumentException> { wsRecommenderService.setupSession(session) }
-    }
 
     @Test
     fun `Should not start websocket without a URI`() {
@@ -92,19 +81,17 @@ class WsRecommenderServiceTest {
     fun `Should successfully start a websocket session`() {
         val session = mockk<WebSocketSession>()
         val expectedDiscogsUser = DiscogsUser("gabriel")
-        val expectedSessionId = "1234"
         val expectedRecommenderSession = RecommenderSession(UUID.randomUUID(), expectedDiscogsUser, listOf())
         val expectedHelloMessage = "Hello!"
         val expectedChatStream = TestTokenStream("Hello from AI!")
 
-        every { session.uri } returns URI.create("ws://localhost:8080/chat?sessionId=${expectedSessionId}&discogsUser=${expectedDiscogsUser.username}")
+        every { session.uri } returns URI.create("ws://localhost:8080/chat?discogsUser=${expectedDiscogsUser.username}")
         every { session.attributes } returns mutableMapOf()
         every { session.sendMessage(any()) } just runs
         every { discogsRecommenderService.startRecommender(expectedDiscogsUser) } returns expectedRecommenderSession
         every { discogsRecommenderService.chat(expectedRecommenderSession, expectedHelloMessage) } returns expectedChatStream
 
         wsRecommenderService.setupSession(session)
-        assertEquals(expectedSessionId, session.attributes["sessionId"])
         assertEquals(expectedRecommenderSession, session.attributes["recommenderSession"])
         verify { session.sendMessage(TextMessage("Hello from AI!")) }
     }

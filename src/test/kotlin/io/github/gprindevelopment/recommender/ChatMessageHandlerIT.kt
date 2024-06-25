@@ -31,7 +31,7 @@ class ChatMessageHandlerIT {
         every { discogsVinylRecommenderService.startRecommender(any()) } returns mockk()
         every { discogsVinylRecommenderService.chat(any(), any()) } returns TestTokenStream(expectedResponse)
 
-        StandardWebSocketClient().execute(handler, "ws://localhost:$port/chat?sessionId=1234&discogsUser=gabriel")
+        StandardWebSocketClient().execute(handler, "ws://localhost:$port/chat?discogsUser=gabriel")
             .join()
         with()
             .atMost(Duration.ofSeconds(10))
