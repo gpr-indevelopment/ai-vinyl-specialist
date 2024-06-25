@@ -57,14 +57,14 @@ class DiscogsResponseMother {
 
     fun emptyDiscogsResponse(): DiscogsCollectionResponse {
         return DiscogsCollectionResponse(
-            Pagination(1, 0, 0, 0, Urls("", "")),
+            Pagination(1, 0, 0, 0),
             emptyList()
         )
     }
 
     fun discogsResponse(page: Int = 1, totalPages: Int = 3): DiscogsCollectionResponse {
         return DiscogsCollectionResponse(
-            Pagination(page, totalPages, 3, 3 * totalPages, Urls("", "")),
+            Pagination(page, totalPages, 3, 3 * totalPages),
             listOf(
                 ReleaseResponse(
                     1,
