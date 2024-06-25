@@ -7,7 +7,16 @@ class DiscogsService(
     val discogsClient: DiscogsClient
 ) {
     fun getFullCollection(user: DiscogsUser): List<VinylRecord> {
-        return discogsClient.getCollection(user.username).toVinylRecords()
+        val vinylRecords = mutableListOf<VinylRecord>()
+        var currentPage = 0
+        var response: DiscogsCollectionResponse
+        do {
+            currentPage++
+            response = discogsClient.getCollection(user.username, currentPage)
+            vinylRecords.addAll(response.toVinylRecords())
+        } while (currentPage < response.pagination.pages)
+
+        return vinylRecords
     }
 
     private fun DiscogsCollectionResponse.toVinylRecords(): List<VinylRecord> {
