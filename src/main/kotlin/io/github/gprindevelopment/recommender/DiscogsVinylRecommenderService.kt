@@ -6,13 +6,13 @@ import java.util.UUID
 
 @Service
 class DiscogsVinylRecommenderService(
-    val discogsClient: DiscogsClient,
+    val discogsService: DiscogsService,
     val assistant: VinylRecommenderAssistant
 ) {
 
     fun startRecommender(user: DiscogsUser): RecommenderSession {
         //TODO: What if nothing is found in the collection?
-        val collectionResponse = discogsClient.getCollection(user.username)
+        val collectionResponse = discogsService.getFullCollection(user)
         val vinylRecords = collectionResponse.toVinylRecords()
         return RecommenderSession(
             UUID.randomUUID(),

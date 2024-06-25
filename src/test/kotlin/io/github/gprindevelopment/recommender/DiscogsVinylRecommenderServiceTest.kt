@@ -19,7 +19,7 @@ class DiscogsVinylRecommenderServiceTest {
     private lateinit var discogsVinylRecommenderService: DiscogsVinylRecommenderService
 
     @MockK
-    private lateinit var discogsClient: DiscogsClient
+    private lateinit var discogsService: DiscogsService
 
     @MockK
     private lateinit var assistant: VinylRecommenderAssistant
@@ -27,7 +27,7 @@ class DiscogsVinylRecommenderServiceTest {
     @Test
     fun `Should successfully start recommender session`() {
         val user = DiscogsUser("some-user")
-        every { discogsClient.getCollection(user.username) } returns DiscogsResponseMother().discogsResponse()
+        every { discogsService.getFullCollection(user) } returns DiscogsResponseMother().discogsResponse()
 
         val session = discogsVinylRecommenderService.startRecommender(user)
         assertEquals(listOf(VinylRecord("Abbey Road", "The Beatles"),
