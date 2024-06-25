@@ -12,13 +12,7 @@ data class Pagination(
     val page: Int,
     val pages: Int,
     @JsonProperty("per_page") val perPage: Int,
-    val items: Int,
-    val urls: Urls
-)
-
-data class Urls(
-    val last: String,
-    val next: String
+    val items: Int
 )
 
 data class ReleaseResponse(
