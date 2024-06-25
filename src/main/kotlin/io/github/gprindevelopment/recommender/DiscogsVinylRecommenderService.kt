@@ -12,22 +12,15 @@ class DiscogsVinylRecommenderService(
 
     fun startRecommender(user: DiscogsUser): RecommenderSession {
         //TODO: What if nothing is found in the collection?
-        val collectionResponse = discogsService.getFullCollection(user)
-        val vinylRecords = collectionResponse.toVinylRecords()
+        val fullCollection = discogsService.getFullCollection(user)
         return RecommenderSession(
             UUID.randomUUID(),
             user,
-            vinylRecords
+            fullCollection
         )
     }
 
     fun chat(session: RecommenderSession, message: String): TokenStream {
         return assistant.chat(message, session.collection, session.memoryId)
     }
-}
-
-private fun DiscogsCollectionResponse.toVinylRecords(): List<VinylRecord> {
-    return this.releases
-        .filter { it.basicInformation.formats.any { format -> format.isVinyl() } }
-        .map { VinylRecord(it.basicInformation.title, it.basicInformation.artists.first().name) }
 }
