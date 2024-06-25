@@ -16,13 +16,13 @@ import kotlin.test.assertNotNull
 class DiscogsVinylRecommenderServiceTest {
 
     @InjectMockKs
-    lateinit var discogsVinylRecommenderService: DiscogsVinylRecommenderService
+    private lateinit var discogsVinylRecommenderService: DiscogsVinylRecommenderService
 
     @MockK
-    lateinit var discogsClient: DiscogsClient
+    private lateinit var discogsClient: DiscogsClient
 
     @MockK
-    lateinit var assistant: VinylRecommenderAssistant
+    private lateinit var assistant: VinylRecommenderAssistant
 
     @Test
     fun `Should successfully start recommender session`() {

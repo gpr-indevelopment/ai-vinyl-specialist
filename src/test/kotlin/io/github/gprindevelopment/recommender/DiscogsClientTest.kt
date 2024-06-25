@@ -9,7 +9,7 @@ import kotlin.test.assertTrue
 class DiscogsClientTest {
 
     @Autowired
-    lateinit var discogsClient: DiscogsClient
+    private lateinit var discogsClient: DiscogsClient
 
     @Test
     fun `Should get collection from Discogs API`() {

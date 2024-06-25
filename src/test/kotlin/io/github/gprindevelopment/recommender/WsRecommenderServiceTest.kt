@@ -16,7 +16,6 @@ import kotlin.test.assertEquals
 @ExtendWith(MockKExtension::class)
 class WsRecommenderServiceTest {
 
-    //TODO: Change all lateinit vars in test to private?
     @InjectMockKs
     private lateinit var wsRecommenderService: WsRecommenderService
 

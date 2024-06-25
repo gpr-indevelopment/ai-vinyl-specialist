@@ -22,7 +22,7 @@ class ChatMessageHandlerIT {
     private var port: Int = 0
 
     @MockkBean
-    lateinit var discogsVinylRecommenderService: DiscogsVinylRecommenderService
+    private lateinit var discogsVinylRecommenderService: DiscogsVinylRecommenderService
 
     @Test
     fun `Should successfully communicate through websockets`() {

@@ -8,10 +8,10 @@ import java.time.Duration
 class VinylRecommenderAssistantIT: AssistantIT() {
 
     @Autowired
-    lateinit var assistant: VinylRecommenderAssistant
+    private lateinit var assistant: VinylRecommenderAssistant
 
     @Autowired
-    lateinit var objectMapper: ObjectMapper
+    private lateinit var objectMapper: ObjectMapper
 
     private data class Record(val artist: String, val title: String)
 

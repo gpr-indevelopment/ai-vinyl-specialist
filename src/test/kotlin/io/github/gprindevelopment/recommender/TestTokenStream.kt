@@ -10,9 +10,9 @@ import java.util.function.Consumer
 
 class TestTokenStream(val message: String): TokenStream, OnCompleteOrOnError, OnStart, OnError {
 
-    var onCompleteCallback: Consumer<Response<AiMessage>>? = null
+    private var onCompleteCallback: Consumer<Response<AiMessage>>? = null
 
-    var onNextCallback: Consumer<String>? = null
+    private var onNextCallback: Consumer<String>? = null
 
     override fun onNext(onNextHandler: Consumer<String>?): OnCompleteOrOnError {
         onNextCallback = onNextHandler
