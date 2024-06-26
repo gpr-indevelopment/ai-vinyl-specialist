@@ -45,6 +45,10 @@ Hallucinations are a pain. I am beginning my journey into RAG as a way to minimi
 Since David operates in the domain of music, Wikipedia is the first knowledge base that comes to mind for RAG.
 Maybe I can leverage the MediaWiki API for searching music pages that are relevant to the conversation.
 
+Testing the LLM application was a challenge. I did more integration tests than usual. This led to a slower development cycle.
+Also, the probabilistic nature of the AI assistant makes it hard to test the application in a deterministic way.
+I was always waiting for the time in which the assistant would not respond what I expected. Fortunately, it behaves as expected more often than not.
+
 ## How to run
 
 You must have [llama3 from Ollama](https://ollama.com/library/llama3) installed and running locally to run this application.
