@@ -1,5 +1,6 @@
-package io.github.gprindevelopment.recommender.assistant
+package io.github.gprindevelopment.recommender.assistant.ollama
 
+import io.github.gprindevelopment.recommender.assistant.AssistantIT
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import java.util.*

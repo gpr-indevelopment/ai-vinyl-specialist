@@ -1,7 +1,7 @@
 package io.github.gprindevelopment.recommender.server
 
 import dev.langchain4j.service.TokenStream
-import io.github.gprindevelopment.recommender.assistant.VinylRecommenderAssistant
+import io.github.gprindevelopment.recommender.assistant.ollama.VinylRecommenderAssistant
 import io.github.gprindevelopment.recommender.discogs.DiscogsService
 import io.github.gprindevelopment.recommender.discogs.DiscogsUser
 import io.github.gprindevelopment.recommender.domain.VinylRecord

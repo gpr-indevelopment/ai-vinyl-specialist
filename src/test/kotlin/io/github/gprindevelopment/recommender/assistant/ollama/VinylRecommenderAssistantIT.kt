@@ -1,6 +1,7 @@
-package io.github.gprindevelopment.recommender.assistant
+package io.github.gprindevelopment.recommender.assistant.ollama
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import io.github.gprindevelopment.recommender.assistant.AssistantIT
 import io.github.gprindevelopment.recommender.domain.VinylRecord
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired

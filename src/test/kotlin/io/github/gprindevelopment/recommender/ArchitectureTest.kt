@@ -38,7 +38,7 @@ class ArchitectureTest {
             .that().resideInAPackage("..dev.langchain4j..")
             .should().onlyBeAccessed().byAnyPackage(
                 "..dev.langchain4j..",
-                "io.github.gprindevelopment.recommender.assistant",
+                "io.github.gprindevelopment.recommender.assistant..",
                 "io.github.gprindevelopment.recommender.server"
             )
         rule.check(langChainClasses)
