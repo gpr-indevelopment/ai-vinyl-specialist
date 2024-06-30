@@ -1,4 +1,4 @@
-package io.github.gprindevelopment.recommender.assistant.ollama
+package io.github.gprindevelopment.recommender.assistant.openai
 
 import dev.langchain4j.service.MemoryId
 import dev.langchain4j.service.TokenStream
@@ -9,13 +9,10 @@ import java.util.*
 
 @AiService(
     wiringMode = AiServiceWiringMode.EXPLICIT,
-    chatModel = "ollamaChatModel",
-    streamingChatModel = "ollamaStreamingChatModel",
+    streamingChatModel = "openAiStreamingChatModel",
     chatMemoryProvider = "chatMemoryProvider"
 )
-interface BasicAssistant {
+interface OpenAIBasicAssistant {
 
     fun chat(@UserMessage message: String, @MemoryId memoryId: UUID = UUID.randomUUID()): TokenStream
-
-    fun chatSync(@UserMessage message: String, @MemoryId memoryId: UUID = UUID.randomUUID()): String
 }
