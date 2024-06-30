@@ -1,15 +1,14 @@
-package io.github.gprindevelopment.recommender.assistant.ollama
+package io.github.gprindevelopment.recommender.assistant.openai
 
-import io.github.gprindevelopment.recommender.assistant.AssistantIT
+import io.github.gprindevelopment.recommender.assistant.AssistantTester
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import java.util.*
-import kotlin.test.assertEquals
 
-class OllamaBasicAssistantIT: AssistantIT() {
+class OpenAIBasicAssistantTester: AssistantTester() {
 
     @Autowired
-    private lateinit var assistant: OllamaBasicAssistant
+    private lateinit var assistant: OpenAIBasicAssistant
 
     @Test
     fun `Should stream chat with recommender`() {
@@ -17,14 +16,6 @@ class OllamaBasicAssistantIT: AssistantIT() {
         val outputStream = assistant.chat(input)
 
         assertStream(outputStream, "X")
-    }
-
-    @Test
-    fun `Should chat with recommender`() {
-        val input = "Hello! This is a test. Respond with the X character only, and nothing else."
-        val response = assistant.chatSync(input)
-
-        assertEquals("X", response)
     }
 
     @Test

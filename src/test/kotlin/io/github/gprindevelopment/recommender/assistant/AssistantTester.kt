@@ -1,13 +1,9 @@
 package io.github.gprindevelopment.recommender.assistant
 
 import dev.langchain4j.service.TokenStream
-import io.github.gprindevelopment.recommender.assistant.TestContainers.containerBaseUrl
 import org.awaitility.Awaitility
-import org.junit.jupiter.api.BeforeAll
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
-import org.springframework.test.context.DynamicPropertyRegistry
-import org.springframework.test.context.DynamicPropertySource
 import org.testcontainers.junit.jupiter.Testcontainers
 import java.time.Duration
 import java.util.function.Consumer
@@ -18,24 +14,7 @@ import kotlin.test.assertTrue
 @Testcontainers
 @SpringBootTest
 @ActiveProfiles("test")
-class AssistantIT {
-
-    companion object {
-
-        val ollamaContainer = TestContainers.ollamaContainer
-
-        @JvmStatic
-        @DynamicPropertySource
-        fun configureProperties(registry: DynamicPropertyRegistry) {
-            registry.add("assistant.ollama.baseUrl") { ollamaContainer.containerBaseUrl() }
-        }
-
-        @JvmStatic
-        @BeforeAll
-        fun startContainer() {
-            ollamaContainer.start()
-        }
-    }
+class AssistantTester {
 
     fun assertStream(stream: TokenStream, expected: String, timeout: Duration = Duration.ofMinutes(2)) {
         assertStreamInternal(stream, { response ->

@@ -1,19 +1,14 @@
 package io.github.gprindevelopment.recommender.assistant.ollama
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import io.github.gprindevelopment.recommender.assistant.AssistantIT
 import io.github.gprindevelopment.recommender.domain.VinylRecord
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import java.time.Duration
 
-class VinylRecommenderAssistantIT: AssistantIT() {
+class VinylRecommenderAssistantTester: OllamaAssistantTester() {
 
     @Autowired
     private lateinit var assistant: VinylRecommenderAssistant
-
-    @Autowired
-    private lateinit var objectMapper: ObjectMapper
 
     private data class Record(val artist: String, val title: String)
 
