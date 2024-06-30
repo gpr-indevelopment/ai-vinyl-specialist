@@ -27,8 +27,7 @@ class AssistantIT {
         @JvmStatic
         @DynamicPropertySource
         fun configureProperties(registry: DynamicPropertyRegistry) {
-            registry.add("langchain4j.ollama.streaming-chat-model.base-url") { ollamaContainer.containerBaseUrl() }
-            registry.add("langchain4j.ollama.chat-model.base-url") { ollamaContainer.containerBaseUrl() }
+            registry.add("assistant.ollama.baseUrl") { ollamaContainer.containerBaseUrl() }
         }
 
         @JvmStatic

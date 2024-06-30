@@ -2,10 +2,16 @@ package io.github.gprindevelopment.recommender.assistant
 
 import dev.langchain4j.service.*
 import dev.langchain4j.service.spring.AiService
+import dev.langchain4j.service.spring.AiServiceWiringMode
 import io.github.gprindevelopment.recommender.domain.VinylRecord
 import java.util.*
 
-@AiService
+@AiService(
+    wiringMode = AiServiceWiringMode.EXPLICIT,
+    chatModel = "ollamaChatModel",
+    streamingChatModel = "ollamaStreamingChatModel",
+    chatMemoryProvider = "chatMemoryProvider"
+)
 interface VinylRecommenderAssistant {
 
     companion object {

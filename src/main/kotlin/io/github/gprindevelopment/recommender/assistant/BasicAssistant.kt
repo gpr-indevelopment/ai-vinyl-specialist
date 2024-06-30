@@ -4,9 +4,15 @@ import dev.langchain4j.service.MemoryId
 import dev.langchain4j.service.TokenStream
 import dev.langchain4j.service.UserMessage
 import dev.langchain4j.service.spring.AiService
+import dev.langchain4j.service.spring.AiServiceWiringMode
 import java.util.*
 
-@AiService
+@AiService(
+    wiringMode = AiServiceWiringMode.EXPLICIT,
+    chatModel = "ollamaChatModel",
+    streamingChatModel = "ollamaStreamingChatModel",
+    chatMemoryProvider = "chatMemoryProvider"
+)
 interface BasicAssistant {
 
     fun chat(@UserMessage message: String, @MemoryId memoryId: UUID = UUID.randomUUID()): TokenStream
