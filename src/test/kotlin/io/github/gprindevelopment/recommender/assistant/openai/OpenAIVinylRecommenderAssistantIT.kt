@@ -10,7 +10,7 @@ class OpenAIVinylRecommenderAssistantIT: AssistantTester() {
 
     @Autowired
     private lateinit var assistant: OpenAIVinylRecommenderAssistant
-    
+
     private val vinylCollection = listOf(
         VinylRecord("Zenyatta Mondatta", "The Police"),
         VinylRecord("Paris", "Supertramp"),
