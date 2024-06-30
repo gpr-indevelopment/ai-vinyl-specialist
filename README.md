@@ -17,11 +17,15 @@ It consists of 4 main building blocks:
 
 It currently uses the [LangChain4j](https://docs.langchain4j.dev) as framework with a local [llama3 from Ollama](https://ollama.com/library/llama3) platform as the AI assistant engine, but it can be easily adapted to use other engines.
 
+The application architecture from below diagram is enforced by the ArchUnit framework through tests in the [ArchitectureTest](src/test/kotlin/io/github/gprindevelopment/recommender/ArchitectureTest.kt) class.
+
+![Architecture diagram](assets/vinyl-recommender-architecture.png)
+
 ## Challenges and limitations
 
 * The llama3 model currently has no support for tools (June 2024). This means that the AI assistant cannot collect the Discogs username and retrieve the record collection on its own. We must do it on the application side and give the data as a system prompt to the model.
 * LLMs might hallucinate. David has provided some incorrect information about records. I am evaluating a [RAG](https://docs.langchain4j.dev/tutorials/rag) approach for minimizing this scenario.
-* Running these models locally can be slow. I have noticed significant cold start times for starting a conversation with David. I am investigating ways of improving cold starts, or moving to a cloud-based model like [Gemini](https://gemini.google.com/).
+* Running these models locally can be slow. I have noticed significant cold start times for starting a conversation with David. I am investigating ways of improving cold starts, or moving to a cloud-based model like [Gemini](https://gemini.google.com/) or [ChatGPT](https://chatgpt.com).
 
 ## Lessons learned
 
