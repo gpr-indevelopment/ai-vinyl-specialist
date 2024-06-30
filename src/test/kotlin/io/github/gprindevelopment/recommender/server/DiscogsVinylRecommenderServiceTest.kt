@@ -1,7 +1,7 @@
 package io.github.gprindevelopment.recommender.server
 
 import dev.langchain4j.service.TokenStream
-import io.github.gprindevelopment.recommender.assistant.ollama.VinylRecommenderAssistant
+import io.github.gprindevelopment.recommender.assistant.ollama.OllamaVinylRecommenderAssistant
 import io.github.gprindevelopment.recommender.discogs.DiscogsService
 import io.github.gprindevelopment.recommender.discogs.DiscogsUser
 import io.github.gprindevelopment.recommender.domain.VinylRecord
@@ -26,7 +26,7 @@ class DiscogsVinylRecommenderServiceTest {
     private lateinit var discogsService: DiscogsService
 
     @MockK
-    private lateinit var assistant: VinylRecommenderAssistant
+    private lateinit var assistant: OllamaVinylRecommenderAssistant
 
     @Test
     fun `Should successfully start recommender session`() {

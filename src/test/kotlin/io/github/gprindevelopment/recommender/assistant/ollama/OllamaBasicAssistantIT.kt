@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import java.util.*
 import kotlin.test.assertEquals
 
-class OllamaBasicAssistantTester: OllamaAssistantTester() {
+class OllamaBasicAssistantIT: OllamaAssistantTester() {
 
     @Autowired
     private lateinit var assistant: OllamaBasicAssistant

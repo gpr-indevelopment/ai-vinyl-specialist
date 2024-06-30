@@ -1,4 +1,4 @@
-package io.github.gprindevelopment.recommender.assistant.ollama
+package io.github.gprindevelopment.recommender.assistant.openai
 
 import dev.langchain4j.service.*
 import dev.langchain4j.service.spring.AiService
@@ -8,11 +8,10 @@ import java.util.*
 
 @AiService(
     wiringMode = AiServiceWiringMode.EXPLICIT,
-    chatModel = "ollamaChatModel",
-    streamingChatModel = "ollamaStreamingChatModel",
+    streamingChatModel = "openAiStreamingChatModel",
     chatMemoryProvider = "chatMemoryProvider"
 )
-interface VinylRecommenderAssistant {
+interface OpenAIVinylRecommenderAssistant {
 
     companion object {
         private const val SYSTEM_MESSAGE = """

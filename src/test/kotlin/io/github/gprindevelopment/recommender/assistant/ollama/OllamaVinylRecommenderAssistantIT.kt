@@ -5,12 +5,10 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import java.time.Duration
 
-class VinylRecommenderAssistantTester: OllamaAssistantTester() {
+class OllamaVinylRecommenderAssistantIT: OllamaAssistantTester() {
 
     @Autowired
-    private lateinit var assistant: VinylRecommenderAssistant
-
-    private data class Record(val artist: String, val title: String)
+    private lateinit var assistant: OllamaVinylRecommenderAssistant
 
     private val vinylCollection = listOf(
         VinylRecord("Zenyatta Mondatta", "The Police"),
