@@ -1,4 +1,4 @@
-package io.github.gprindevelopment.recommender
+package io.github.gprindevelopment.recommender.server
 
 import dev.langchain4j.data.message.AiMessage
 import dev.langchain4j.model.output.Response

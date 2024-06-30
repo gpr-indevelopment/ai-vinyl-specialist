@@ -1,5 +1,6 @@
-package io.github.gprindevelopment.recommender
+package io.github.gprindevelopment.recommender.discogs
 
+import io.github.gprindevelopment.recommender.domain.VinylRecord
 import org.springframework.stereotype.Service
 
 @Service

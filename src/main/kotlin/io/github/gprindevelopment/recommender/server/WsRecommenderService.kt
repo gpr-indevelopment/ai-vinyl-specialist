@@ -1,5 +1,6 @@
-package io.github.gprindevelopment.recommender
+package io.github.gprindevelopment.recommender.server
 
+import io.github.gprindevelopment.recommender.discogs.DiscogsUser
 import org.springframework.stereotype.Service
 import org.springframework.web.socket.TextMessage
 import org.springframework.web.socket.WebSocketSession

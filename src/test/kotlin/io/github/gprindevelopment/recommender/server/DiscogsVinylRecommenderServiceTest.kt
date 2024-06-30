@@ -1,6 +1,10 @@
-package io.github.gprindevelopment.recommender
+package io.github.gprindevelopment.recommender.server
 
 import dev.langchain4j.service.TokenStream
+import io.github.gprindevelopment.recommender.assistant.VinylRecommenderAssistant
+import io.github.gprindevelopment.recommender.discogs.DiscogsService
+import io.github.gprindevelopment.recommender.discogs.DiscogsUser
+import io.github.gprindevelopment.recommender.domain.VinylRecord
 import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
@@ -33,8 +37,10 @@ class DiscogsVinylRecommenderServiceTest {
         )
 
         val session = discogsVinylRecommenderService.startRecommender(user)
-        assertEquals(listOf(VinylRecord("Abbey Road", "The Beatles"),
-            VinylRecord("Let It Be", "The Beatles")), session.collection)
+        assertEquals(listOf(
+            VinylRecord("Abbey Road", "The Beatles"),
+            VinylRecord("Let It Be", "The Beatles")
+        ), session.collection)
         assertEquals(user, session.user)
         assertNotNull(session.memoryId)
     }

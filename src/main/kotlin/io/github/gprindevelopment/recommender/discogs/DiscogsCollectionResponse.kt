@@ -1,4 +1,4 @@
-package io.github.gprindevelopment.recommender
+package io.github.gprindevelopment.recommender.discogs
 
 import com.fasterxml.jackson.annotation.JsonProperty
 

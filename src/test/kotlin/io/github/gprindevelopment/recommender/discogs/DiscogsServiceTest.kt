@@ -1,5 +1,6 @@
-package io.github.gprindevelopment.recommender
+package io.github.gprindevelopment.recommender.discogs
 
+import io.github.gprindevelopment.recommender.domain.VinylRecord
 import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK

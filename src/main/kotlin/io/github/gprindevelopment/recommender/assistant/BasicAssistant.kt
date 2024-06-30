@@ -1,4 +1,4 @@
-package io.github.gprindevelopment.recommender
+package io.github.gprindevelopment.recommender.assistant
 
 import dev.langchain4j.service.MemoryId
 import dev.langchain4j.service.TokenStream

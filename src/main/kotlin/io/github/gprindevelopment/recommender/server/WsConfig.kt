@@ -1,4 +1,4 @@
-package io.github.gprindevelopment.recommender
+package io.github.gprindevelopment.recommender.server
 
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.socket.config.annotation.EnableWebSocket

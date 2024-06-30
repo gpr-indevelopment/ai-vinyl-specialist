@@ -1,4 +1,4 @@
-package io.github.gprindevelopment.recommender
+package io.github.gprindevelopment.recommender.discogs
 
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired

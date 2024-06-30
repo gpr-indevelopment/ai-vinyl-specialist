@@ -1,7 +1,7 @@
-package io.github.gprindevelopment.recommender
+package io.github.gprindevelopment.recommender.assistant
 
 import dev.langchain4j.service.TokenStream
-import io.github.gprindevelopment.recommender.TestContainers.containerBaseUrl
+import io.github.gprindevelopment.recommender.assistant.TestContainers.containerBaseUrl
 import org.awaitility.Awaitility
 import org.junit.jupiter.api.BeforeAll
 import org.springframework.boot.test.context.SpringBootTest

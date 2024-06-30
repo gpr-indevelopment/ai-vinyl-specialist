@@ -1,4 +1,4 @@
-package io.github.gprindevelopment.recommender
+package io.github.gprindevelopment.recommender.assistant
 
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -8,7 +8,7 @@ import kotlin.test.assertEquals
 class BasicAssistantIT: AssistantIT() {
 
     @Autowired
-    private lateinit var assistant:BasicAssistant
+    private lateinit var assistant: BasicAssistant
 
     @Test
     fun `Should stream chat with recommender`() {

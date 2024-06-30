@@ -1,6 +1,9 @@
-package io.github.gprindevelopment.recommender
+package io.github.gprindevelopment.recommender.server
 
 import dev.langchain4j.service.TokenStream
+import io.github.gprindevelopment.recommender.assistant.VinylRecommenderAssistant
+import io.github.gprindevelopment.recommender.discogs.DiscogsService
+import io.github.gprindevelopment.recommender.discogs.DiscogsUser
 import org.springframework.stereotype.Service
 import java.util.UUID
 

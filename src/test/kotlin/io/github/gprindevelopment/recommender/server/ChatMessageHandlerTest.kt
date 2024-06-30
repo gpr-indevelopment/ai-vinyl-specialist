@@ -1,4 +1,4 @@
-package io.github.gprindevelopment.recommender
+package io.github.gprindevelopment.recommender.server
 
 import io.mockk.*
 import io.mockk.impl.annotations.InjectMockKs

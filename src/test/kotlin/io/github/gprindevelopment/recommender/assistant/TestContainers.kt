@@ -1,4 +1,4 @@
-package io.github.gprindevelopment.recommender
+package io.github.gprindevelopment.recommender.assistant
 
 import org.testcontainers.ollama.OllamaContainer
 import org.testcontainers.utility.DockerImageName

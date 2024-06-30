@@ -1,4 +1,4 @@
-package io.github.gprindevelopment.recommender
+package io.github.gprindevelopment.recommender.server
 
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every

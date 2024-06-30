@@ -1,6 +1,7 @@
-package io.github.gprindevelopment.recommender
+package io.github.gprindevelopment.recommender.assistant
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import io.github.gprindevelopment.recommender.domain.VinylRecord
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import java.time.Duration

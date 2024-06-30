@@ -1,7 +1,8 @@
-package io.github.gprindevelopment.recommender
+package io.github.gprindevelopment.recommender.assistant
 
 import dev.langchain4j.service.*
 import dev.langchain4j.service.spring.AiService
+import io.github.gprindevelopment.recommender.domain.VinylRecord
 import java.util.*
 
 @AiService

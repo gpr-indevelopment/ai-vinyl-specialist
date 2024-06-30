@@ -1,5 +1,6 @@
-package io.github.gprindevelopment.recommender
+package io.github.gprindevelopment.recommender.server
 
+import io.github.gprindevelopment.recommender.discogs.DiscogsUser
 import io.mockk.*
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
