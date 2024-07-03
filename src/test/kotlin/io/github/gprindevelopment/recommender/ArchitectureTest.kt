@@ -22,7 +22,7 @@ class ArchitectureTest {
             .should().respectTheirAllowedDependencies(
                 allow()
                     .fromModule("server").toModules("discogs", "assistant", "domain")
-                    .fromModule("assistant").toModules("domain")
+                    .fromModule("assistant").toModules("domain", "discogs")
                     .fromModule("discogs").toModules("domain"),
                     consideringOnlyDependenciesBetweenModules()
             )

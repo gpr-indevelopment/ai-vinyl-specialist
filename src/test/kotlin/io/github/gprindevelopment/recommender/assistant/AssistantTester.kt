@@ -8,6 +8,7 @@ import org.testcontainers.junit.jupiter.Testcontainers
 import java.time.Duration
 import java.util.function.Consumer
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
@@ -25,6 +26,12 @@ class AssistantTester {
     fun assertStreamContainsOneOf(stream: TokenStream, expected: List<String>, timeout: Duration = Duration.ofMinutes(2)) {
         assertStreamInternal(stream, { response ->
             assertTrue(expected.any { response.contains(it) })
+        }, timeout)
+    }
+
+    fun assertStreamDoesNotContainOneOf(stream: TokenStream, expected: List<String>, timeout: Duration = Duration.ofMinutes(2)) {
+        assertStreamInternal(stream, { response ->
+            assertFalse(expected.any { response.contains(it) })
         }, timeout)
     }
 

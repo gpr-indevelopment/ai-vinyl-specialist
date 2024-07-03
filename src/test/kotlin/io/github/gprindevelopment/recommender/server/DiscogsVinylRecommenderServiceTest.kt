@@ -56,7 +56,7 @@ class DiscogsVinylRecommenderServiceTest {
         )
         val expectedStream = mockk<TokenStream>()
 
-        every { assistant.chat("Hello!", collection, memoryId) } returns expectedStream
+        every { assistant.chat("Hello!", memoryId) } returns expectedStream
 
         val stream = discogsVinylRecommenderService.chat(session, "Hello!")
         assertEquals(expectedStream, stream)

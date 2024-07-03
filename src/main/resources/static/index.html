@@ -28,7 +28,6 @@
 </head>
 <body>
     <h1>Discogs AI Chat</h1>
-    <input id="usernameInput" type="text" placeholder="Enter Discogs username">
     <div id="aiResponses"></div>
     <textarea id="promptInput" rows="4" placeholder="Enter your prompt here"></textarea>
     <button id="sendButton">Send</button>
@@ -36,32 +35,26 @@
     <script>
         document.getElementById('promptInput').disabled = true;
 
-        document.getElementById('usernameInput').addEventListener('keydown', function(event) {
-            if (event.keyCode === 13) {
-                event.preventDefault();
-                var socket = new WebSocket('ws://localhost:8080/chat?discogsUser=' + this.value);
-                document.getElementById('usernameInput').disabled = true;
-                document.getElementById('promptInput').disabled = false;
-                socket.addEventListener('open', function (event) {
-                    console.log('WebSocket is open now.');
-                });
+        var socket = new WebSocket('ws://localhost:8080/chat?discogsUser=' + this.value);
+        document.getElementById('promptInput').disabled = false;
+        socket.addEventListener('open', function (event) {
+            console.log('WebSocket is open now.');
+        });
 
-                socket.addEventListener('message', function (event) {
-                    var aiResponsesDiv = document.getElementById('aiResponses');
-                    if (event.data === "EOS") {
-                        aiResponsesDiv.innerHTML += '<br><br>';
-                    } else {
-                        aiResponsesDiv.innerText += event.data;
-                    }
-                });
-
-                document.getElementById('sendButton').addEventListener('click', function(event) {
-                    var prompt = document.getElementById('promptInput').value;
-                    socket.send(prompt);
-                    document.getElementById('promptInput').value = '';
-                })
+        socket.addEventListener('message', function (event) {
+            var aiResponsesDiv = document.getElementById('aiResponses');
+            if (event.data === "EOS") {
+                aiResponsesDiv.innerHTML += '<br><br>';
+            } else {
+                aiResponsesDiv.innerText += event.data;
             }
         });
+
+        document.getElementById('sendButton').addEventListener('click', function(event) {
+            var prompt = document.getElementById('promptInput').value;
+            socket.send(prompt);
+            document.getElementById('promptInput').value = '';
+        })
     </script>
 </body>
 </html>

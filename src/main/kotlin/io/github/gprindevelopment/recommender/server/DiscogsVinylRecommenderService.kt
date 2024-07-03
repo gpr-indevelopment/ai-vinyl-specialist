@@ -15,6 +15,7 @@ class DiscogsVinylRecommenderService(
 
     fun startRecommender(user: DiscogsUser): RecommenderSession {
         //TODO: What if nothing is found in the collection?
+        //TODO: Remove fullCollection from RecommenderSession. Review module dependency between server and discogs.
         val fullCollection = discogsService.getFullCollection(user)
         return RecommenderSession(
             UUID.randomUUID(),
@@ -23,8 +24,8 @@ class DiscogsVinylRecommenderService(
         )
     }
 
-    //TODO: Can we make the model selectable from the UI?
+    //TODO: Can we make the AI model selectable from the UI?
     fun chat(session: RecommenderSession, message: String): TokenStream {
-        return assistant.chat(message, session.collection, session.memoryId)
+        return assistant.chat(message, session.memoryId)
     }
 }
