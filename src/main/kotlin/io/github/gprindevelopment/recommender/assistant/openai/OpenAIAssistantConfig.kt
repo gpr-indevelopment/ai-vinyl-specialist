@@ -12,13 +12,15 @@ class OpenAIAssistantConfig {
     @Bean
     fun openAiStreamingChatModel(@Value("\${assistant.openai.apiKey}") apiKey: String,
                                  @Value("\${assistant.openai.modelName}") modelName: String,
-                                 @Value("\${assistant.openai.timeout}") timeout: Duration
+                                 @Value("\${assistant.openai.timeout}") timeout: Duration,
+                                 @Value("\${assistant.openai.logRequests}") logRequests: Boolean,
     ): OpenAiStreamingChatModel {
         return OpenAiStreamingChatModel
             .builder()
             .apiKey(apiKey)
             .modelName(modelName)
             .timeout(timeout)
+            .logRequests(logRequests)
             .build()
     }
 }

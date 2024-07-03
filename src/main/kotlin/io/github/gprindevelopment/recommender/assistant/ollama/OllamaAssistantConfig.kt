@@ -13,26 +13,30 @@ class OllamaAssistantConfig {
     @Bean
     fun ollamaChatModel(@Value("\${assistant.ollama.baseUrl}") baseUrl: String,
                         @Value("\${assistant.ollama.modelName}") modelName: String,
-                        @Value("\${assistant.ollama.timeout}") timeout: Duration
+                        @Value("\${assistant.ollama.timeout}") timeout: Duration,
+                        @Value("\${assistant.ollama.logRequests}") logRequests: Boolean
     ): OllamaChatModel {
         return OllamaChatModel
             .builder()
             .baseUrl(baseUrl)
             .modelName(modelName)
             .timeout(timeout)
+            .logRequests(logRequests)
             .build()
     }
 
     @Bean
     fun ollamaStreamingChatModel(@Value("\${assistant.ollama.baseUrl}") baseUrl: String,
                                  @Value("\${assistant.ollama.modelName}") modelName: String,
-                                 @Value("\${assistant.ollama.timeout}") timeout: Duration
+                                 @Value("\${assistant.ollama.timeout}") timeout: Duration,
+                                 @Value("\${assistant.ollama.logRequests}") logRequests: Boolean
     ): OllamaStreamingChatModel {
         return OllamaStreamingChatModel
             .builder()
             .baseUrl(baseUrl)
             .modelName(modelName)
             .timeout(timeout)
+            .logRequests(logRequests)
             .build()
     }
 }
