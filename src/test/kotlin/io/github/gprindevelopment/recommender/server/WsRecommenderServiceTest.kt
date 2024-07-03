@@ -1,5 +1,6 @@
 package io.github.gprindevelopment.recommender.server
 
+import io.github.gprindevelopment.recommender.assistant.openai.OpenAICostCalculator
 import io.github.gprindevelopment.recommender.discogs.DiscogsUser
 import io.mockk.*
 import io.mockk.impl.annotations.InjectMockKs
@@ -22,6 +23,9 @@ class WsRecommenderServiceTest {
 
     @MockK
     private lateinit var discogsRecommenderService: DiscogsVinylRecommenderService
+
+    @MockK
+    private lateinit var openAICostCalculator: OpenAICostCalculator
 
     @Test
     fun `Should not start websocket without a URI`() {
@@ -54,6 +58,7 @@ class WsRecommenderServiceTest {
         ) as Map<String, Any>
         every { discogsRecommenderService.chat(expectedRecommenderSession, inputString) } returns expectedChatStream
         every { wsSession.sendMessage(any()) } just runs
+        every { openAICostCalculator.calculateCostDollars(any()) } returns 0.0
 
         wsRecommenderService.chat(inputString, wsSession)
         verify { wsSession.sendMessage(TextMessage(expectedAiMessage)) }
@@ -72,6 +77,7 @@ class WsRecommenderServiceTest {
         ) as Map<String, Any>
         every { discogsRecommenderService.chat(expectedRecommenderSession, inputString) } returns expectedChatStream
         every { wsSession.sendMessage(any()) } just runs
+        every { openAICostCalculator.calculateCostDollars(any()) } returns 0.0
 
         wsRecommenderService.chat(inputString, wsSession)
         verify { wsSession.sendMessage(TextMessage("EOS")) }
@@ -90,6 +96,7 @@ class WsRecommenderServiceTest {
         every { session.sendMessage(any()) } just runs
         every { discogsRecommenderService.startRecommender(expectedDiscogsUser) } returns expectedRecommenderSession
         every { discogsRecommenderService.chat(expectedRecommenderSession, expectedHelloMessage) } returns expectedChatStream
+        every { openAICostCalculator.calculateCostDollars(any()) } returns 0.0
 
         wsRecommenderService.setupSession(session)
         assertEquals(expectedRecommenderSession, session.attributes["recommenderSession"])

@@ -1,5 +1,6 @@
 package io.github.gprindevelopment.recommender.server
 
+import io.github.gprindevelopment.recommender.assistant.openai.OpenAICostCalculator
 import io.github.gprindevelopment.recommender.discogs.DiscogsUser
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -11,6 +12,7 @@ import java.net.URI
 @Service
 class WsRecommenderService(
     val discogsRecommenderService: DiscogsVinylRecommenderService,
+    val openAICostCalculator: OpenAICostCalculator
 ) {
 
     private val logger = LoggerFactory.getLogger(WsRecommenderService::class.java)
@@ -34,7 +36,8 @@ class WsRecommenderService(
         stream
             .onNext { modelResponse -> wsSession.sendMessage(TextMessage(modelResponse)) }
             .onComplete {
-                logger.info("Completed assistant response. ${it.tokenUsage()}")
+                //TODO: Should we abstract this into a completionReporter class?
+                logger.info("Completed assistant response. Costs $ ${openAICostCalculator.calculateCostDollars(it.tokenUsage())}. ${it.tokenUsage()}")
                 wsSession.sendMessage(TextMessage("EOS"))
             }
             .ignoreErrors()

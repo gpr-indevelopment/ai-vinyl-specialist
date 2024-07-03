@@ -1,7 +1,9 @@
 package io.github.gprindevelopment.recommender.server
 
 import dev.langchain4j.data.message.AiMessage
+import dev.langchain4j.model.output.FinishReason
 import dev.langchain4j.model.output.Response
+import dev.langchain4j.model.output.TokenUsage
 import dev.langchain4j.service.OnCompleteOrOnError
 import dev.langchain4j.service.OnError
 import dev.langchain4j.service.OnStart
@@ -34,6 +36,6 @@ class TestTokenStream(val message: String): TokenStream, OnCompleteOrOnError, On
 
     override fun start() {
         onNextCallback?.accept(message)
-        onCompleteCallback?.accept(Response(AiMessage(message)))
+        onCompleteCallback?.accept(Response(AiMessage(message), TokenUsage(0, 0), FinishReason.STOP))
     }
 }
