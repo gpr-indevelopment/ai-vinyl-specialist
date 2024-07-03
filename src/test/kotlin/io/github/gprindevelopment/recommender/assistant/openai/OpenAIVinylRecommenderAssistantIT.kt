@@ -40,11 +40,11 @@ class OpenAIVinylRecommenderAssistantIT: AssistantTester() {
             This is a test. You must answer with the recommended title only, nothing else.
             My Discogs username is test.
         """.trimIndent()
-        val titles = vinylCollection.map { it.title }
+        val beatlesTitles = vinylCollection.filter { it.artist.contains("Beatles") }.map { it.title }
 
         every { discogsService.getFullCollection(DiscogsUser("test")) } returns vinylCollection
         val response = assistant.chat(message)
-        assertStreamContainsOneOf(response, titles, Duration.ofSeconds(30))
+        assertStreamContainsOneOf(response, beatlesTitles, Duration.ofSeconds(30))
     }
 
     @Test
