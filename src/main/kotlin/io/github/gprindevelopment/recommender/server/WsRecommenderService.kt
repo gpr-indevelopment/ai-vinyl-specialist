@@ -1,6 +1,7 @@
 package io.github.gprindevelopment.recommender.server
 
 import io.github.gprindevelopment.recommender.discogs.DiscogsUser
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.web.socket.TextMessage
 import org.springframework.web.socket.WebSocketSession
@@ -11,6 +12,8 @@ import java.net.URI
 class WsRecommenderService(
     val discogsRecommenderService: DiscogsVinylRecommenderService,
 ) {
+
+    private val logger = LoggerFactory.getLogger(WsRecommenderService::class.java)
 
     fun setupSession(wsSession: WebSocketSession) {
         val uri = wsSession.uri ?: throw IllegalArgumentException("URI is required.")
@@ -30,7 +33,10 @@ class WsRecommenderService(
         //TODO: What to do with errors?
         stream
             .onNext { modelResponse -> wsSession.sendMessage(TextMessage(modelResponse)) }
-            .onComplete { wsSession.sendMessage(TextMessage("EOS")) }
+            .onComplete {
+                logger.info("Completed assistant response. ${it.tokenUsage()}")
+                wsSession.sendMessage(TextMessage("EOS"))
+            }
             .ignoreErrors()
             .start()
     }
