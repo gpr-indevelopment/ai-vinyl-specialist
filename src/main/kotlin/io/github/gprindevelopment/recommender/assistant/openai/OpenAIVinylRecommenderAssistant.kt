@@ -11,7 +11,6 @@ import java.util.*
 //TODO: Can we specify a specific format for a recommendation output?
 //TODO: Cover all examples in tooling with unit tests
 //TODO: Can we use another AI assistant for helping us assert the responses? An assistant that answers YES and NO allows us to assert using plain english.
-//TODO: There should be a test that makes sure that assistant dont need to call discogs multiple times, only once
 @AiService(
     wiringMode = AiServiceWiringMode.EXPLICIT,
     streamingChatModel = "openAiStreamingChatModel",

@@ -10,6 +10,7 @@ import io.mockk.verify
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import java.time.Duration
+import java.util.UUID
 
 class OpenAIVinylRecommenderAssistantIT: AssistantTester() {
 
@@ -70,5 +71,28 @@ class OpenAIVinylRecommenderAssistantIT: AssistantTester() {
         every { discogsService.getFullCollection(DiscogsUser("testa")) } returns emptyList()
         val response = assistant.chat(message)
         assertStreamDoesNotContainOneOf(response, titles, Duration.ofSeconds(30))
+    }
+
+    @Test
+    fun `When asking two recommendations, should not fetch Discogs twice`() {
+        every { discogsService.getFullCollection(DiscogsUser("test")) } returns vinylCollection
+        val memory = UUID.randomUUID()
+        val beatlesTitles = vinylCollection.filter { it.artist.contains("Beatles") }.map { it.title }
+        val supertrampTitles = vinylCollection.filter { it.artist.contains("Supertramp") }.map { it.title }
+        val message1 = """
+            Hello! Can you recommend me a Beatles record?
+            This is a test. You must answer with the recommended title only, nothing else.
+            My Discogs username is test.
+        """.trimIndent()
+        val response1 = assistant.chat(message1, memory)
+        assertStreamContainsOneOf(response1, beatlesTitles, Duration.ofSeconds(30))
+
+        val message2 = """
+            Thanks! Can you now recommend me a Supertramp record?
+        """.trimIndent()
+        val response2 = assistant.chat(message2, memory)
+        assertStreamContainsOneOf(response2, supertrampTitles, Duration.ofSeconds(30))
+
+        verify(atMost = 1) { discogsService.getFullCollection(DiscogsUser("test")) }
     }
 }
