@@ -35,7 +35,7 @@
     <script>
         document.getElementById('promptInput').disabled = true;
 
-        var socket = new WebSocket('ws://localhost:8080/chat?discogsUser=' + this.value);
+        var socket = new WebSocket('ws://localhost:8080/chat');
         document.getElementById('promptInput').disabled = false;
         socket.addEventListener('open', function (event) {
             console.log('WebSocket is open now.');

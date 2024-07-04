@@ -1,13 +1,12 @@
 package io.github.gprindevelopment.recommender.server
 
 import io.github.gprindevelopment.recommender.assistant.openai.OpenAICostCalculator
-import io.github.gprindevelopment.recommender.discogs.DiscogsUser
+import io.github.gprindevelopment.recommender.assistant.openai.OpenAIVinylRecommenderAssistant
 import io.mockk.*
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.web.socket.TextMessage
 import org.springframework.web.socket.WebSocketSession
@@ -22,41 +21,24 @@ class WsRecommenderServiceTest {
     private lateinit var wsRecommenderService: WsRecommenderService
 
     @MockK
-    private lateinit var discogsRecommenderService: DiscogsVinylRecommenderService
+    private lateinit var assistant: OpenAIVinylRecommenderAssistant
 
     @MockK
     private lateinit var openAICostCalculator: OpenAICostCalculator
 
     @Test
-    fun `Should not start websocket without a URI`() {
-        val session = mockk<WebSocketSession>()
-
-        every { session.uri } returns null
-        assertThrows<IllegalArgumentException> { wsRecommenderService.setupSession(session) }
-    }
-
-    @Test
-    fun `Should not start websocket without a discogs user`() {
-        val session = mockk<WebSocketSession>()
-
-        every { session.uri } returns URI.create("ws://localhost:8080/chat?sessionId=1234")
-        every { session.attributes } returns mutableMapOf()
-
-        assertThrows<IllegalArgumentException> { wsRecommenderService.setupSession(session) }
-    }
-
-    @Test
     fun `Should chat through websockets`() {
         val inputString = "I want record recommendations!"
         val wsSession = mockk<WebSocketSession>()
-        val expectedRecommenderSession = RecommenderSession(UUID.randomUUID(), DiscogsUser("gabriel"), listOf())
+        val memoryId = UUID.randomUUID()
+        val expectedRecommenderSession = RecommenderSession(memoryId)
         val expectedAiMessage = "I am an AI and I will recommend!"
         val expectedChatStream = TestTokenStream(expectedAiMessage)
 
         every { wsSession.attributes } returns mutableMapOf(
             "recommenderSession" to expectedRecommenderSession
         ) as Map<String, Any>
-        every { discogsRecommenderService.chat(expectedRecommenderSession, inputString) } returns expectedChatStream
+        every { assistant.chat(inputString, memoryId) } returns expectedChatStream
         every { wsSession.sendMessage(any()) } just runs
         every { openAICostCalculator.calculateCostDollars(any()) } returns 0.0
 
@@ -68,14 +50,15 @@ class WsRecommenderServiceTest {
     fun `Should send an EOS when chat response ends`() {
         val inputString = "I want record recommendations!"
         val wsSession = mockk<WebSocketSession>()
-        val expectedRecommenderSession = RecommenderSession(UUID.randomUUID(), DiscogsUser("gabriel"), listOf())
+        val memoryId = UUID.randomUUID()
+        val expectedRecommenderSession = RecommenderSession(memoryId)
         val expectedAiMessage = "I am an AI and I will recommend!"
         val expectedChatStream = TestTokenStream(expectedAiMessage)
 
         every { wsSession.attributes } returns mutableMapOf(
             "recommenderSession" to expectedRecommenderSession
         ) as Map<String, Any>
-        every { discogsRecommenderService.chat(expectedRecommenderSession, inputString) } returns expectedChatStream
+        every { assistant.chat(inputString, memoryId) } returns expectedChatStream
         every { wsSession.sendMessage(any()) } just runs
         every { openAICostCalculator.calculateCostDollars(any()) } returns 0.0
 
@@ -86,20 +69,18 @@ class WsRecommenderServiceTest {
     @Test
     fun `Should successfully start a websocket session`() {
         val session = mockk<WebSocketSession>()
-        val expectedDiscogsUser = DiscogsUser("gabriel")
-        val expectedRecommenderSession = RecommenderSession(UUID.randomUUID(), expectedDiscogsUser, listOf())
         val expectedHelloMessage = "Hello!"
         val expectedChatStream = TestTokenStream("Hello from AI!")
+        val memoryIdSlot = slot<UUID>()
 
-        every { session.uri } returns URI.create("ws://localhost:8080/chat?discogsUser=${expectedDiscogsUser.username}")
+        every { session.uri } returns URI.create("ws://localhost:8080/chat")
         every { session.attributes } returns mutableMapOf()
         every { session.sendMessage(any()) } just runs
-        every { discogsRecommenderService.startRecommender(expectedDiscogsUser) } returns expectedRecommenderSession
-        every { discogsRecommenderService.chat(expectedRecommenderSession, expectedHelloMessage) } returns expectedChatStream
+        every { assistant.chat(eq(expectedHelloMessage), capture(memoryIdSlot)) } returns expectedChatStream
         every { openAICostCalculator.calculateCostDollars(any()) } returns 0.0
 
         wsRecommenderService.setupSession(session)
-        assertEquals(expectedRecommenderSession, session.attributes["recommenderSession"])
+        assertEquals(memoryIdSlot.captured, (session.attributes["recommenderSession"] as RecommenderSession).memoryId)
         verify { session.sendMessage(TextMessage("Hello from AI!")) }
     }
 }

@@ -10,7 +10,6 @@ class ChatMessageHandler(
     val service: WsRecommenderService
 ): TextWebSocketHandler() {
 
-    //TODO: Can these illegal argument exceptions become custom websocket exceptions?
     override fun afterConnectionEstablished(session: WebSocketSession) {
         service.setupSession(session)
         super.afterConnectionEstablished(session)

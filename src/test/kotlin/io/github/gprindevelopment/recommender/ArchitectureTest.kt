@@ -21,7 +21,7 @@ class ArchitectureTest {
             .definedByPackages("io.github.gprindevelopment.recommender.(*)..")
             .should().respectTheirAllowedDependencies(
                 allow()
-                    .fromModule("server").toModules("discogs", "assistant", "domain")
+                    .fromModule("server").toModules("assistant")
                     .fromModule("assistant").toModules("domain", "discogs")
                     .fromModule("discogs").toModules("domain"),
                     consideringOnlyDependenciesBetweenModules()

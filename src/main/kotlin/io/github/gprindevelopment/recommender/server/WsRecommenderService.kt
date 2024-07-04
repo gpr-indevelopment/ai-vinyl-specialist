@@ -1,26 +1,24 @@
 package io.github.gprindevelopment.recommender.server
 
 import io.github.gprindevelopment.recommender.assistant.openai.OpenAICostCalculator
-import io.github.gprindevelopment.recommender.discogs.DiscogsUser
+import io.github.gprindevelopment.recommender.assistant.openai.OpenAIVinylRecommenderAssistant
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.web.socket.TextMessage
 import org.springframework.web.socket.WebSocketSession
-import org.springframework.web.util.UriComponentsBuilder
-import java.net.URI
+import java.util.*
 
 @Service
 class WsRecommenderService(
-    val discogsRecommenderService: DiscogsVinylRecommenderService,
+    val assistant: OpenAIVinylRecommenderAssistant,
     val openAICostCalculator: OpenAICostCalculator
 ) {
 
     private val logger = LoggerFactory.getLogger(WsRecommenderService::class.java)
 
+    //TODO: Can these illegal argument exceptions become custom websocket exceptions?
     fun setupSession(wsSession: WebSocketSession) {
-        val uri = wsSession.uri ?: throw IllegalArgumentException("URI is required.")
-        val discogsUser = extractDiscogsUsername(uri) ?: throw IllegalArgumentException("Discogs user is required.")
-        val recommenderSession = discogsRecommenderService.startRecommender(DiscogsUser(discogsUser))
+        val recommenderSession = RecommenderSession(UUID.randomUUID())
         wsSession.attributes["recommenderSession"] = recommenderSession
         chat("Hello!", wsSession, recommenderSession)
     }
@@ -31,7 +29,7 @@ class WsRecommenderService(
     }
 
     private fun chat(message: String, wsSession: WebSocketSession, recommenderSession: RecommenderSession) {
-        val stream = discogsRecommenderService.chat(recommenderSession, message)
+        val stream = assistant.chat(message, recommenderSession.memoryId)
         //TODO: What to do with errors?
         stream
             .onNext { modelResponse -> wsSession.sendMessage(TextMessage(modelResponse)) }
@@ -42,13 +40,5 @@ class WsRecommenderService(
             }
             .ignoreErrors()
             .start()
-    }
-
-    private fun extractDiscogsUsername(uri: URI): String? {
-        return UriComponentsBuilder
-            .fromUri(uri)
-            .build()
-            .queryParams
-            .getFirst("discogsUser")
     }
 }
