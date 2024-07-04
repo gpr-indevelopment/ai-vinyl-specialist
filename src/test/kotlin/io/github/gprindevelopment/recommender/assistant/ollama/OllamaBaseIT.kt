@@ -1,7 +1,7 @@
 package io.github.gprindevelopment.recommender.assistant.ollama
 
-import io.github.gprindevelopment.recommender.assistant.TestContainers
-import io.github.gprindevelopment.recommender.assistant.TestContainers.containerBaseUrl
+import io.github.gprindevelopment.recommender.assistant.OllamaTestContainer
+import io.github.gprindevelopment.recommender.assistant.OllamaTestContainer.containerBaseUrl
 import org.junit.jupiter.api.BeforeAll
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
@@ -16,18 +16,16 @@ class OllamaBaseIT {
 
     companion object {
 
-        val ollamaContainer = TestContainers.ollamaContainer
-
         @JvmStatic
         @DynamicPropertySource
         fun configureProperties(registry: DynamicPropertyRegistry) {
-            registry.add("assistant.ollama.baseUrl") { ollamaContainer.containerBaseUrl() }
+            registry.add("assistant.ollama.baseUrl") { OllamaTestContainer.container.containerBaseUrl() }
         }
 
         @JvmStatic
         @BeforeAll
         fun startContainer() {
-            ollamaContainer.start()
+            OllamaTestContainer.container.start()
         }
     }
 }

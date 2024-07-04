@@ -14,6 +14,7 @@ import java.util.*
 @AiService(
     wiringMode = AiServiceWiringMode.EXPLICIT,
     streamingChatModel = "openAiStreamingChatModel",
+    chatModel = "openAiChatModel",
     chatMemoryProvider = "chatMemoryProvider",
     tools = ["toolsProvider"]
 )
@@ -66,4 +67,8 @@ interface OpenAIVinylRecommenderAssistant {
     @SystemMessage(SYSTEM_MESSAGE)
     fun chat(@UserMessage message: String,
              @MemoryId memoryId: UUID = UUID.randomUUID()): TokenStream
+
+    @SystemMessage(SYSTEM_MESSAGE)
+    fun chatSync(@UserMessage message: String,
+             @MemoryId memoryId: UUID = UUID.randomUUID()): String
 }

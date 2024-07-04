@@ -12,6 +12,7 @@ import kotlin.test.assertTrue
 class StreamAssertions {
 
     companion object {
+        //TODO: Can we use chatSync for tests instead of stream? Makes it more difficult.
         fun assertStream(stream: TokenStream, expected: String, timeout: Duration = Duration.ofMinutes(2)) {
             assertStreamInternal(stream, { response ->
                 assertEquals(expected, response)

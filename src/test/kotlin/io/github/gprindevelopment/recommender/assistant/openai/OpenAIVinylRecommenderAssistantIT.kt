@@ -3,6 +3,7 @@ package io.github.gprindevelopment.recommender.assistant.openai
 import com.ninjasquad.springmockk.MockkBean
 import io.github.gprindevelopment.recommender.assistant.StreamAssertions.Companion.assertStreamContainsOneOf
 import io.github.gprindevelopment.recommender.assistant.StreamAssertions.Companion.assertStreamDoesNotContainOneOf
+import io.github.gprindevelopment.recommender.assistant.reviewer.TestReviewAssistant
 import io.github.gprindevelopment.recommender.discogs.DiscogsService
 import io.github.gprindevelopment.recommender.discogs.DiscogsUser
 import io.github.gprindevelopment.recommender.domain.VinylRecord
@@ -26,6 +27,9 @@ class OpenAIVinylRecommenderAssistantIT {
 
     @MockkBean
     private lateinit var discogsService: DiscogsService
+
+    @Autowired
+    private lateinit var testReviewAssistant: TestReviewAssistant
 
     private val vinylCollection = listOf(
         VinylRecord("Zenyatta Mondatta", "The Police"),
@@ -101,5 +105,18 @@ class OpenAIVinylRecommenderAssistantIT {
         assertStreamContainsOneOf(response2, supertrampTitles, Duration.ofSeconds(30))
 
         verify(atMost = 1) { discogsService.getFullCollection(DiscogsUser("test")) }
+    }
+
+    @Test
+    fun `Should only recommend records based on what was asked for`() {
+        val message = """
+            Hello! Can you recommend me 3 Beatles records?
+            My Discogs username is test.
+        """.trimIndent()
+
+        every { discogsService.getFullCollection(DiscogsUser("test")) } returns vinylCollection
+        val response = assistant.chatSync(message)
+        //Wrong: assertTrue(testReviewAssistant.review("Did the message only mention Beatles records?", response))
+        testReviewAssistant.review("Were all the recommended records from The Beatles?", response)
     }
 }
