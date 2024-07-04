@@ -13,9 +13,7 @@ class ReviewerAssistantConfig {
 
     @Bean
     fun ollamaTestReviewerChatModel(): OllamaChatModel {
-        //TODO: Can we avoid clicking start on the container on multiple places? OllamaBaseIT does it once. Maybe we can move to a getter
         val ollamaTestContainer = OllamaTestContainer.container
-        ollamaTestContainer.start()
         return OllamaChatModel
             .builder()
             .baseUrl(ollamaTestContainer.containerBaseUrl())

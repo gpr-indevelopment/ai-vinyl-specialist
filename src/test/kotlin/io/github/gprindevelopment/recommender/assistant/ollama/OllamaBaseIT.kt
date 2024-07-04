@@ -2,7 +2,6 @@ package io.github.gprindevelopment.recommender.assistant.ollama
 
 import io.github.gprindevelopment.recommender.assistant.OllamaTestContainer
 import io.github.gprindevelopment.recommender.assistant.OllamaTestContainer.containerBaseUrl
-import org.junit.jupiter.api.BeforeAll
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.DynamicPropertyRegistry
@@ -20,12 +19,6 @@ class OllamaBaseIT {
         @DynamicPropertySource
         fun configureProperties(registry: DynamicPropertyRegistry) {
             registry.add("assistant.ollama.baseUrl") { OllamaTestContainer.container.containerBaseUrl() }
-        }
-
-        @JvmStatic
-        @BeforeAll
-        fun startContainer() {
-            OllamaTestContainer.container.start()
         }
     }
 }

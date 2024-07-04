@@ -11,6 +11,10 @@ object OllamaTestContainer {
         DockerImageName.parse("langchain4j/ollama-llama3:latest")
             .asCompatibleSubstituteFor("ollama/ollama")
     ).withReuse(true)
+        get() {
+            field.start()
+            return field
+        }
 
     fun OllamaContainer.containerBaseUrl(): String {
         return String.format("http://%s:%d", this.host, this.firstMappedPort)
