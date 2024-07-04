@@ -1,11 +1,12 @@
 package io.github.gprindevelopment.recommender.assistant.ollama
 
+import io.github.gprindevelopment.recommender.assistant.StreamAssertions.Companion.assertStreamContainsOneOf
 import io.github.gprindevelopment.recommender.domain.VinylRecord
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import java.time.Duration
 
-class OllamaVinylRecommenderAssistantIT: OllamaAssistantTester() {
+class OllamaVinylRecommenderAssistantIT: OllamaBaseIT() {
 
     @Autowired
     private lateinit var assistant: OllamaVinylRecommenderAssistant

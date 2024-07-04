@@ -1,7 +1,8 @@
 package io.github.gprindevelopment.recommender.assistant.openai
 
 import com.ninjasquad.springmockk.MockkBean
-import io.github.gprindevelopment.recommender.assistant.AssistantTester
+import io.github.gprindevelopment.recommender.assistant.StreamAssertions.Companion.assertStreamContainsOneOf
+import io.github.gprindevelopment.recommender.assistant.StreamAssertions.Companion.assertStreamDoesNotContainOneOf
 import io.github.gprindevelopment.recommender.discogs.DiscogsService
 import io.github.gprindevelopment.recommender.discogs.DiscogsUser
 import io.github.gprindevelopment.recommender.domain.VinylRecord
@@ -9,10 +10,16 @@ import io.mockk.every
 import io.mockk.verify
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.test.context.ActiveProfiles
+import org.testcontainers.junit.jupiter.Testcontainers
 import java.time.Duration
-import java.util.UUID
+import java.util.*
 
-class OpenAIVinylRecommenderAssistantIT: AssistantTester() {
+@Testcontainers
+@SpringBootTest
+@ActiveProfiles("test")
+class OpenAIVinylRecommenderAssistantIT {
 
     @Autowired
     private lateinit var assistant: OpenAIVinylRecommenderAssistant

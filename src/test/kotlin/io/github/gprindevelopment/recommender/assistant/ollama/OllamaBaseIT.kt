@@ -1,13 +1,18 @@
 package io.github.gprindevelopment.recommender.assistant.ollama
 
-import io.github.gprindevelopment.recommender.assistant.AssistantTester
 import io.github.gprindevelopment.recommender.assistant.TestContainers
 import io.github.gprindevelopment.recommender.assistant.TestContainers.containerBaseUrl
 import org.junit.jupiter.api.BeforeAll
+import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.DynamicPropertyRegistry
 import org.springframework.test.context.DynamicPropertySource
+import org.testcontainers.junit.jupiter.Testcontainers
 
-class OllamaAssistantTester: AssistantTester() {
+@Testcontainers
+@SpringBootTest
+@ActiveProfiles("test")
+class OllamaBaseIT {
 
     companion object {
 

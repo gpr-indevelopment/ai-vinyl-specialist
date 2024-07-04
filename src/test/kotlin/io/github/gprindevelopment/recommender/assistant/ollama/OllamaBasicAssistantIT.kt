@@ -1,11 +1,13 @@
 package io.github.gprindevelopment.recommender.assistant.ollama
 
+import io.github.gprindevelopment.recommender.assistant.StreamAssertions.Companion.assertStream
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import java.util.*
 import kotlin.test.assertEquals
 
-class OllamaBasicAssistantIT: OllamaAssistantTester() {
+
+class OllamaBasicAssistantIT: OllamaBaseIT() {
 
     @Autowired
     private lateinit var assistant: OllamaBasicAssistant
