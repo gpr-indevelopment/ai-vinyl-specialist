@@ -6,6 +6,7 @@ import dev.langchain4j.service.V
 import dev.langchain4j.service.spring.AiService
 import dev.langchain4j.service.spring.AiServiceWiringMode
 
+//TODO: Can we enable JSON mode for this service? Besides the TRUE and FALSE response, it would also be useful to have a human readable explanation alongside it to help implementing tests.
 @AiService(
     wiringMode = AiServiceWiringMode.EXPLICIT,
     chatModel = "ollamaTestReviewerChatModel",
