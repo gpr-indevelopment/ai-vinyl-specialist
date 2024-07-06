@@ -11,8 +11,10 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
+import java.net.URL
 import java.util.*
 import kotlin.test.assertContains
+import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 @SpringBootTest
@@ -29,16 +31,16 @@ class OpenAIVinylRecommenderAssistantIT {
     private lateinit var testReviewAssistant: TestReviewAssistant
 
     private val vinylCollection = listOf(
-        VinylRecord("Zenyatta Mondatta", "The Police"),
-        VinylRecord("Paris", "Supertramp"),
-        VinylRecord("Bring On The Night", "Sting"),
-        VinylRecord("The Autobiography Of Supertramp", "Supertramp"),
-        VinylRecord("Carpenters", "Carpenters"),
-        VinylRecord("An Evening With Silk Sonic", "Silk Sonic"),
-        VinylRecord("Abbey Road", "The Beatles"),
-        VinylRecord("1962-1966", "The Beatles"),
-        VinylRecord("1967-1970", "The Beatles"),
-        VinylRecord("Let It Be", "The Beatles")
+        VinylRecord("Zenyatta Mondatta", "The Police", URL("https://localhost/zenyatta-mondatta.jpg")),
+        VinylRecord("Paris", "Supertramp", URL("https://localhost/paris.jpg")),
+        VinylRecord("Bring On The Night", "Sting", URL("https://localhost/bring-on-the-night.jpg")),
+        VinylRecord("The Autobiography Of Supertramp", "Supertramp", URL("https://localhost/the-autobiography-of-supertramp.jpg")),
+        VinylRecord("Carpenters", "Carpenters", URL("https://localhost/carpenters.jpg")),
+        VinylRecord("An Evening With Silk Sonic", "Silk Sonic", URL("https://localhost/an-evening-with-silk-sonic.jpg")),
+        VinylRecord("Abbey Road", "The Beatles", URL("https://localhost/abbey-road.jpg")),
+        VinylRecord("1962-1966", "The Beatles", URL("https://localhost/1962-1966.jpg")),
+        VinylRecord("1967-1970", "The Beatles", URL("https://localhost/1967-1970.jpg")),
+        VinylRecord("Let It Be", "The Beatles", URL("https://localhost/let-it-be.jpg"))
     )
 
     @Test
@@ -117,16 +119,25 @@ class OpenAIVinylRecommenderAssistantIT {
     @Test
     fun `Recommendations should be mentioned in message and recommendations field`() {
         val message = """
-            Hello! Can you recommend me a Sting record?
-            My Discogs username is test.
+            Hello! Can you recommend me a Sting record? My Discogs username is test.
         """.trimIndent()
 
         every { discogsService.getFullCollection(DiscogsUser("test")) } returns vinylCollection
         val response = assistant.chatSync(message)
         assertContains(response.message, "Sting")
         assertContains(response.message, "Bring On The Night")
-        assertTrue(response.recommendations.any {
-            it.artist == "Sting" && it.title == "Bring On The Night"
-        })
+        assertContains(response.recommendations, VinylRecord("Bring On The Night", "Sting", URL("https://localhost/bring-on-the-night.jpg")))
+    }
+
+    @Test
+    fun `Cover image should be added to the recommendation object, but not the message`() {
+        val message = """
+            Hello! Can you recommend me a Sting record? My Discogs username is test.
+        """.trimIndent()
+
+        every { discogsService.getFullCollection(DiscogsUser("test")) } returns vinylCollection
+        val response = assistant.chatSync(message)
+        assertFalse(response.message.contains("https://localhost/bring-on-the-night.jpg"))
+        assertContains(response.recommendations, VinylRecord("Bring On The Night", "Sting", URL("https://localhost/bring-on-the-night.jpg")))
     }
 }
