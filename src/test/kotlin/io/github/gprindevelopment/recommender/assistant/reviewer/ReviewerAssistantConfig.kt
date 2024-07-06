@@ -1,9 +1,7 @@
 package io.github.gprindevelopment.recommender.assistant.reviewer
 
-import dev.langchain4j.model.ollama.OllamaChatModel
-import io.github.gprindevelopment.recommender.assistant.OllamaTestContainer
-import io.github.gprindevelopment.recommender.assistant.OllamaTestContainer.containerBaseUrl
-import io.github.gprindevelopment.recommender.assistant.OllamaTestContainer.modelName
+import dev.langchain4j.model.openai.OpenAiChatModel
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import java.time.Duration
@@ -12,14 +10,17 @@ import java.time.Duration
 class ReviewerAssistantConfig {
 
     @Bean
-    fun ollamaTestReviewerChatModel(): OllamaChatModel {
-        val ollamaTestContainer = OllamaTestContainer.container
-        return OllamaChatModel
+    fun openAiTestReviewerChatModel(@Value("\${assistant.openai.apiKey}") apiKey: String,
+                                    @Value("\${assistant.openai.modelName}") modelName: String,
+                                    @Value("\${assistant.openai.timeout}") timeout: Duration,
+                                    @Value("\${assistant.openai.logRequests}") logRequests: Boolean): OpenAiChatModel {
+        return OpenAiChatModel
             .builder()
-            .baseUrl(ollamaTestContainer.containerBaseUrl())
-            .modelName(ollamaTestContainer.modelName())
-            //TODO: Can we decrease this timeout? Seems long
-            .timeout(Duration.ofMinutes(3))
+            .responseFormat("json_object")
+            .apiKey(apiKey)
+            .modelName(modelName)
+            .timeout(timeout)
+            .logRequests(logRequests)
             .build()
     }
 }

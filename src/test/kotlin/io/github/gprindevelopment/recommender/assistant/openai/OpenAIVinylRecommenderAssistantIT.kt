@@ -16,6 +16,7 @@ import org.springframework.test.context.ActiveProfiles
 import org.testcontainers.junit.jupiter.Testcontainers
 import java.time.Duration
 import java.util.*
+import kotlin.test.assertTrue
 
 @Testcontainers
 @SpringBootTest
@@ -116,7 +117,6 @@ class OpenAIVinylRecommenderAssistantIT {
 
         every { discogsService.getFullCollection(DiscogsUser("test")) } returns vinylCollection
         val response = assistant.chatSync(message)
-        //Wrong: assertTrue(testReviewAssistant.review("Did the message only mention Beatles records?", response))
-        testReviewAssistant.review("Were all the recommended records from The Beatles?", response)
+        assertTrue(testReviewAssistant.review("Were all the recommended records from The Beatles?", response).answer)
     }
 }
