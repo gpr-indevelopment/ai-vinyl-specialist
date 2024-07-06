@@ -28,8 +28,9 @@ class ChatMessageHandlerIT {
     private lateinit var assistant: OpenAIVinylRecommenderAssistant
 
     @Test
-    fun `Should successfully communicate through websockets`() {
+    fun `Should successfully communicate with JSON through websockets`() {
         val expectedResponse = "Welcome to the recommender!"
+        val expectedResponseJson = "{\"message\":\"Welcome to the recommender!\",\"recommendations\":[]}"
         val handler = TestWsHandler()
         every { assistant.chatSync(any(), any()) } returns Result.builder<RecommenderResponse>()
             .tokenUsage(TokenUsage(0, 0))
@@ -43,7 +44,7 @@ class ChatMessageHandlerIT {
             .await()
             .untilAsserted {
                 assertEquals(2, handler.messagesReceived.size)
-                assertContains(handler.messagesReceived, expectedResponse)
+                assertContains(handler.messagesReceived, expectedResponseJson)
             }
     }
 

@@ -51,7 +51,7 @@ class OpenAIVinylRecommenderAssistantIT {
 
         every { discogsService.getFullCollection(DiscogsUser("test")) } returns vinylCollection
         val response = assistant.chatSync(message)
-        assertTrue(testReviewAssistant.review("The chatbot recommended a single record from the Beatles, and no other records", response.message).answer)
+        assertTrue(testReviewAssistant.review("The chatbot recommended records from the Beatles, and not from other artists", response.message).answer)
     }
 
     @Test

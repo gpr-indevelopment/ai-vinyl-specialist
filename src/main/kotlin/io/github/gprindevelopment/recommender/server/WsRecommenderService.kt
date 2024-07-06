@@ -34,6 +34,7 @@ class WsRecommenderService(
         val chatResult = assistant.chatSync(message, recommenderSession.memoryId)
         logger.info("Completed assistant response. Costs $ ${openAICostCalculator.calculateCostDollars(chatResult.tokenUsage())}. ${chatResult.tokenUsage()}")
         //TODO: Test to verify EOS is sent after the main message
+        //TODO: With synchronous message, is EOS still needed?
         wsSession.sendMessage(TextMessage(objectMapper.writeValueAsString(chatResult.content())))
         wsSession.sendMessage(TextMessage("EOS"))
         //TODO: What to do with errors?
