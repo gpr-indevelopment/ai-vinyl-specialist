@@ -1,8 +1,6 @@
 package io.github.gprindevelopment.recommender.assistant
 
 import com.ninjasquad.springmockk.MockkBean
-import io.github.gprindevelopment.recommender.assistant.StreamAssertions.Companion.assertStreamContainsOneOf
-import io.github.gprindevelopment.recommender.assistant.StreamAssertions.Companion.assertStreamDoesNotContainOneOf
 import io.github.gprindevelopment.recommender.assistant.reviewer.TestReviewAssistant
 import io.github.gprindevelopment.recommender.discogs.DiscogsService
 import io.github.gprindevelopment.recommender.discogs.DiscogsUser
@@ -13,8 +11,8 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
-import java.time.Duration
 import java.util.*
+import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 @SpringBootTest
@@ -47,14 +45,12 @@ class OpenAIVinylRecommenderAssistantIT {
     fun `Should recommend vinyl records from collection retrieved via discogs tool`() {
         val message = """
             Hello! Can you recommend me a Beatles record?
-            This is a test. You must answer with the recommended title only, nothing else.
             My Discogs username is test.
         """.trimIndent()
-        val beatlesTitles = vinylCollection.filter { it.artist.contains("Beatles") }.map { it.title }
 
         every { discogsService.getFullCollection(DiscogsUser("test")) } returns vinylCollection
-        val response = assistant.chat(message)
-        assertStreamContainsOneOf(response, beatlesTitles, Duration.ofSeconds(30))
+        val response = assistant.chatSync(message)
+        assertTrue(testReviewAssistant.review("Was there a single recommended record from the Beatles, and no other records?", response).answer)
     }
 
     @Test
@@ -62,10 +58,9 @@ class OpenAIVinylRecommenderAssistantIT {
         val message = """
             Hello! Can you recommend me a Beatles record?
         """.trimIndent()
-        val titles = vinylCollection.map { it.title }
 
-        val response = assistant.chat(message)
-        assertStreamDoesNotContainOneOf(response, titles, Duration.ofSeconds(30))
+        val response = assistant.chatSync(message)
+        assertTrue(testReviewAssistant.review("Did the chatbot ask for a Discogs username instead of providing a recommendation?", response).answer)
 
         verify(inverse = true) { discogsService.getFullCollection(any()) }
     }
@@ -76,32 +71,29 @@ class OpenAIVinylRecommenderAssistantIT {
             Hello! Can you recommend me a Beatles record?
             My Discogs username is test.
         """.trimIndent()
-        val titles = vinylCollection.map { it.title }
 
-        every { discogsService.getFullCollection(DiscogsUser("testa")) } returns emptyList()
-        val response = assistant.chat(message)
-        assertStreamDoesNotContainOneOf(response, titles, Duration.ofSeconds(30))
+        every { discogsService.getFullCollection(DiscogsUser("test")) } returns emptyList()
+        val response = assistant.chatSync(message)
+        assertFalse(testReviewAssistant.review("Did the chatbot provide any record recommendation?", response).answer)
     }
 
     @Test
     fun `When asking two recommendations, should not fetch Discogs twice`() {
         every { discogsService.getFullCollection(DiscogsUser("test")) } returns vinylCollection
         val memory = UUID.randomUUID()
-        val beatlesTitles = vinylCollection.filter { it.artist.contains("Beatles") }.map { it.title }
-        val supertrampTitles = vinylCollection.filter { it.artist.contains("Supertramp") }.map { it.title }
         val message1 = """
             Hello! Can you recommend me a Beatles record?
             This is a test. You must answer with the recommended title only, nothing else.
             My Discogs username is test.
         """.trimIndent()
-        val response1 = assistant.chat(message1, memory)
-        assertStreamContainsOneOf(response1, beatlesTitles, Duration.ofSeconds(30))
+        val response1 = assistant.chatSync(message1, memory)
+        assertTrue(testReviewAssistant.review("Did the chatbot provide any record recommendation?", response1).answer)
 
         val message2 = """
             Thanks! Can you now recommend me a Supertramp record?
         """.trimIndent()
-        val response2 = assistant.chat(message2, memory)
-        assertStreamContainsOneOf(response2, supertrampTitles, Duration.ofSeconds(30))
+        val response2 = assistant.chatSync(message2, memory)
+        assertTrue(testReviewAssistant.review("Did the chatbot provide any record recommendation?", response2).answer)
 
         verify(atMost = 1) { discogsService.getFullCollection(DiscogsUser("test")) }
     }
@@ -116,5 +108,17 @@ class OpenAIVinylRecommenderAssistantIT {
         every { discogsService.getFullCollection(DiscogsUser("test")) } returns vinylCollection
         val response = assistant.chatSync(message)
         assertTrue(testReviewAssistant.review("Were all the recommended records from The Beatles?", response).answer)
+    }
+
+    @Test
+    fun `Should not recommend records outside of the collection`() {
+        val message = """
+            Hello! Can you recommend me a Pink Floyd record?
+            My Discogs username is test.
+        """.trimIndent()
+
+        every { discogsService.getFullCollection(DiscogsUser("test")) } returns vinylCollection
+        val response = assistant.chatSync(message)
+        assertFalse(testReviewAssistant.review("Did the chatbot recommend any record?", response).answer)
     }
 }

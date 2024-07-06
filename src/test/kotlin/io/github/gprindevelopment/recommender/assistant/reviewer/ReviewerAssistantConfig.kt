@@ -21,6 +21,7 @@ class ReviewerAssistantConfig {
             .modelName(modelName)
             .timeout(timeout)
             .logRequests(logRequests)
+            .logResponses(true)
             .build()
     }
 }
