@@ -2,6 +2,7 @@ package io.github.gprindevelopment.recommender.discogs
 
 import io.github.gprindevelopment.recommender.domain.VinylRecord
 import org.springframework.stereotype.Service
+import java.net.URL
 
 @Service
 class DiscogsService(
@@ -23,6 +24,6 @@ class DiscogsService(
     private fun DiscogsCollectionResponse.toVinylRecords(): List<VinylRecord> {
         return this.releases
             .filter { it.basicInformation.formats.any { format -> format.isVinyl() } }
-            .map { VinylRecord(it.basicInformation.title, it.basicInformation.artists.first().name) }
+            .map { VinylRecord(it.basicInformation.title, it.basicInformation.artists.first().name, URL(it.basicInformation.coverImage)) }
     }
 }
