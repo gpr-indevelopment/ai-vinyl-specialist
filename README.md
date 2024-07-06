@@ -53,6 +53,13 @@ Testing the LLM application was a challenge. I did more integration tests than u
 Also, the probabilistic nature of the AI assistant makes it hard to test the application in a deterministic way.
 I was always waiting for the time in which the assistant would not respond what I expected. Fortunately, it behaves as expected more often than not.
 
+## Go right/wrong
+
+1. Go right: Few-shot prompting. The results from the recommender improved significantly when I applied this technique to my system prompt. I added the persona, the tone, some context behind the conversation and a few examples on what would be expected from the AI to do.
+2. Go wrong: AI test reviewer. Assertions from the AI integration tests often involved string processing. I thought using another AI specialized in reviewing test outcomes would facilitate the process. I would give it a statement and the response from the main AI, and the test reviwer would return if its a pass or fail. It led to flaky tests due to the accumulation of probabilistic errors of both AIs working together.
+3. Go wrong: Using Ollama and llama3. I initially used llama3 running inside Ollama as a way to prototype a gen AI application for free. It worked initially, but it quickly led to very slow development cycles. My test suite would take 5 minutes to run with 20 tests while running a reusable test container. Running the application had a ~1 minute cold start delay for starting the conversation. I had to substitute it for a cloud-based LLM like ChatGPT 3.5.
+4. Go right: Tools. I initially fetched the collection of vinyl records from Discogs using application code and added it to the system prompt of the LLM. This approach required an input field on the UI for collecting this data. When changing to tools, the AI would be able to collect the Discogs username from the user on its own, and make it all more conversational. It eliminates the need for UI forms.
+
 ## How to run
 
 You must have [llama3 from Ollama](https://ollama.com/library/llama3) installed and running locally to run this application.
