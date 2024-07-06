@@ -1,5 +1,6 @@
 package io.github.gprindevelopment.recommender.server
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import dev.langchain4j.model.output.TokenUsage
 import dev.langchain4j.service.Result
 import io.github.gprindevelopment.recommender.assistant.OpenAICostCalculator
@@ -8,6 +9,7 @@ import io.github.gprindevelopment.recommender.assistant.RecommenderResponse
 import io.mockk.*
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
+import io.mockk.impl.annotations.SpyK
 import io.mockk.junit5.MockKExtension
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -29,6 +31,9 @@ class WsRecommenderServiceTest {
     @MockK
     private lateinit var openAICostCalculator: OpenAICostCalculator
 
+    @SpyK
+    var objectMapper: ObjectMapper = ObjectMapper()
+
     @Test
     fun `Should chat through websockets`() {
         val inputString = "I want record recommendations!"
@@ -45,11 +50,11 @@ class WsRecommenderServiceTest {
             "recommenderSession" to expectedRecommenderSession
         ) as Map<String, Any>
         every { assistant.chatSync(inputString, memoryId) } returns expectedResult
-        every { wsSession.sendMessage(any()) } just runs
+        every { wsSession.sendMessage(TextMessage("{\"message\":\"I am an AI and I will recommend!\",\"recommendations\":[]}")) } just runs
+        every { wsSession.sendMessage(TextMessage("EOS")) } just runs
         every { openAICostCalculator.calculateCostDollars(any()) } returns 0.0
 
         wsRecommenderService.chat(inputString, wsSession)
-        verify { wsSession.sendMessage(TextMessage(expectedAiMessage)) }
     }
 
     @Test
@@ -76,7 +81,7 @@ class WsRecommenderServiceTest {
     }
 
     @Test
-    fun `Should successfully start a websocket session`() {
+    fun `Should successfully start a websocket session with json responses`() {
         val session = mockk<WebSocketSession>()
         val expectedHelloMessage = "Hello!"
         val memoryIdSlot = slot<UUID>()
@@ -87,12 +92,12 @@ class WsRecommenderServiceTest {
 
         every { session.uri } returns URI.create("ws://localhost:8080/chat")
         every { session.attributes } returns mutableMapOf()
-        every { session.sendMessage(any()) } just runs
+        every { session.sendMessage(TextMessage("EOS")) } just runs
+        every { session.sendMessage(TextMessage("{\"message\":\"Hello from AI!\",\"recommendations\":[]}")) } just runs
         every { assistant.chatSync(eq(expectedHelloMessage), capture(memoryIdSlot)) } returns expectedResult
         every { openAICostCalculator.calculateCostDollars(any()) } returns 0.0
 
         wsRecommenderService.setupSession(session)
         assertEquals(memoryIdSlot.captured, (session.attributes["recommenderSession"] as RecommenderSession).memoryId)
-        verify { session.sendMessage(TextMessage("Hello from AI!")) }
     }
 }

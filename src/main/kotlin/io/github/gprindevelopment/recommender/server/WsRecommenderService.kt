@@ -1,5 +1,6 @@
 package io.github.gprindevelopment.recommender.server
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import io.github.gprindevelopment.recommender.assistant.OpenAICostCalculator
 import io.github.gprindevelopment.recommender.assistant.OpenAIVinylRecommenderAssistant
 import org.slf4j.LoggerFactory
@@ -11,7 +12,8 @@ import java.util.*
 @Service
 class WsRecommenderService(
     val assistant: OpenAIVinylRecommenderAssistant,
-    val openAICostCalculator: OpenAICostCalculator
+    val openAICostCalculator: OpenAICostCalculator,
+    val objectMapper: ObjectMapper
 ) {
 
     private val logger = LoggerFactory.getLogger(WsRecommenderService::class.java)
@@ -31,7 +33,8 @@ class WsRecommenderService(
     private fun chat(message: String, wsSession: WebSocketSession, recommenderSession: RecommenderSession) {
         val chatResult = assistant.chatSync(message, recommenderSession.memoryId)
         logger.info("Completed assistant response. Costs $ ${openAICostCalculator.calculateCostDollars(chatResult.tokenUsage())}. ${chatResult.tokenUsage()}")
-        wsSession.sendMessage(TextMessage(chatResult.content().message))
+        //TODO: Test to verify EOS is sent after the main message
+        wsSession.sendMessage(TextMessage(objectMapper.writeValueAsString(chatResult.content())))
         wsSession.sendMessage(TextMessage("EOS"))
         //TODO: What to do with errors?
     }
