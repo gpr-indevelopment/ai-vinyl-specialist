@@ -1,4 +1,4 @@
-package io.github.gprindevelopment.recommender.assistant.openai
+package io.github.gprindevelopment.recommender.assistant
 
 import io.github.gprindevelopment.recommender.discogs.DiscogsService
 import io.github.gprindevelopment.recommender.discogs.DiscogsUser

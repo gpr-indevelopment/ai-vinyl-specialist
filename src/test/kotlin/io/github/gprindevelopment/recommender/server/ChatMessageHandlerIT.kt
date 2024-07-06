@@ -1,7 +1,7 @@
 package io.github.gprindevelopment.recommender.server
 
 import com.ninjasquad.springmockk.MockkBean
-import io.github.gprindevelopment.recommender.assistant.openai.OpenAIVinylRecommenderAssistant
+import io.github.gprindevelopment.recommender.assistant.OpenAIVinylRecommenderAssistant
 import io.mockk.every
 import org.awaitility.Awaitility.with
 import org.junit.jupiter.api.Test

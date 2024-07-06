@@ -1,7 +1,7 @@
 package io.github.gprindevelopment.recommender.server
 
-import io.github.gprindevelopment.recommender.assistant.openai.OpenAICostCalculator
-import io.github.gprindevelopment.recommender.assistant.openai.OpenAIVinylRecommenderAssistant
+import io.github.gprindevelopment.recommender.assistant.OpenAICostCalculator
+import io.github.gprindevelopment.recommender.assistant.OpenAIVinylRecommenderAssistant
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.web.socket.TextMessage

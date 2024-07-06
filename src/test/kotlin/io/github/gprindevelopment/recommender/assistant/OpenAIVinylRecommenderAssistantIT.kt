@@ -1,4 +1,4 @@
-package io.github.gprindevelopment.recommender.assistant.openai
+package io.github.gprindevelopment.recommender.assistant
 
 import com.ninjasquad.springmockk.MockkBean
 import io.github.gprindevelopment.recommender.assistant.StreamAssertions.Companion.assertStreamContainsOneOf
@@ -13,12 +13,10 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
-import org.testcontainers.junit.jupiter.Testcontainers
 import java.time.Duration
 import java.util.*
 import kotlin.test.assertTrue
 
-@Testcontainers
 @SpringBootTest
 @ActiveProfiles("test")
 class OpenAIVinylRecommenderAssistantIT {

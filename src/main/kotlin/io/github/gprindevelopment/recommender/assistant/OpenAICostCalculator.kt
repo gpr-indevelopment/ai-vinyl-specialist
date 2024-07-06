@@ -1,4 +1,4 @@
-package io.github.gprindevelopment.recommender.assistant.openai
+package io.github.gprindevelopment.recommender.assistant
 
 import dev.langchain4j.model.output.TokenUsage
 import org.springframework.beans.factory.annotation.Value
