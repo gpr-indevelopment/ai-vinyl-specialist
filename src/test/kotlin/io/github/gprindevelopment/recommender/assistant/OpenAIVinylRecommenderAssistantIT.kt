@@ -44,8 +44,7 @@ class OpenAIVinylRecommenderAssistantIT {
     @Test
     fun `Should recommend vinyl records from collection retrieved via discogs tool`() {
         val message = """
-            Hello! Can you recommend me a Beatles record?
-            My Discogs username is test.
+            Hello! Can you recommend me a Beatles record? My Discogs username is test.
         """.trimIndent()
 
         every { discogsService.getFullCollection(DiscogsUser("test")) } returns vinylCollection
@@ -68,8 +67,7 @@ class OpenAIVinylRecommenderAssistantIT {
     @Test
     fun `Should not recommend vinyl records if Discogs collection is empty`() {
         val message = """
-            Hello! Can you recommend me a Beatles record?
-            My Discogs username is test.
+            Hello! Can you recommend me a Beatles record? My Discogs username is test.
         """.trimIndent()
 
         every { discogsService.getFullCollection(DiscogsUser("test")) } returns emptyList()
@@ -97,8 +95,7 @@ class OpenAIVinylRecommenderAssistantIT {
     @Test
     fun `Should only recommend records based on what was asked for`() {
         val message = """
-            Hello! Can you recommend me 3 Beatles records?
-            My Discogs username is test.
+            Hello! Can you recommend me 3 Beatles records? My Discogs username is test.
         """.trimIndent()
 
         every { discogsService.getFullCollection(DiscogsUser("test")) } returns vinylCollection
@@ -109,8 +106,7 @@ class OpenAIVinylRecommenderAssistantIT {
     @Test
     fun `Should not recommend records outside of the collection`() {
         val message = """
-            Hello! Can you recommend me a Pink Floyd record?
-            My Discogs username is test.
+            Hello! Can you recommend me a Pink Floyd record? My Discogs username is test.
         """.trimIndent()
 
         every { discogsService.getFullCollection(DiscogsUser("test")) } returns vinylCollection
@@ -129,6 +125,8 @@ class OpenAIVinylRecommenderAssistantIT {
         val response = assistant.chatSync(message)
         assertContains(response.message, "Sting")
         assertContains(response.message, "Bring On The Night")
-        assertContains(response.recommendations, VinylRecord("Bring On The Night", "Sting"))
+        assertTrue(response.recommendations.any {
+            it.artist == "Sting" && it.title == "Bring On The Night"
+        })
     }
 }

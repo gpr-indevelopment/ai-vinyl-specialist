@@ -30,7 +30,9 @@ data class BasicInformation(
     val labels: List<LabelResponse>,
     val genres: List<String>,
     val styles: List<String>,
-    val formats: List<FormatResponse>
+    val formats: List<FormatResponse>,
+    @JsonProperty("cover_image")
+    val coverImage: String? = null,
 )
 
 data class ArtistResponse(

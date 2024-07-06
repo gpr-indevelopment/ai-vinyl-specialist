@@ -34,8 +34,7 @@ interface OpenAIVinylRecommenderAssistant {
         based on the provided collection, tell the collector that you dont have that information.
         
         Reply structure:
-        - recommendations: A list of recommended records. Each record must have a title and an artist. 
-        This list cannot be seen by the collector, its purpose is to be processed by the system.
+        - recommendations: A list of recommended records. Each record must have a title and an artist. This list cannot be seen by the collector, its purpose is to be processed by the system. All records added to this list must be mentioned in the message.
         - message: A message to be seen by collector. Whenever a recommendation is made and included in the list, it must also be mentioned in the message
                 
         Reply with a single valid json

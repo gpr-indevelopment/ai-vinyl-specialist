@@ -4,7 +4,7 @@ import org.springframework.cloud.openfeign.FeignClient
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 
-@FeignClient(url = "https://api.discogs.com", name = "discogs")
+@FeignClient(url = "https://api.discogs.com", name = "discogs", configuration = [DiscogsClientConfig::class])
 interface DiscogsClient {
 
     @GetMapping("/users/{userId}/collection/folders/0/releases?per_page=50&page={page}")
