@@ -29,16 +29,10 @@ class WsRecommenderService(
     }
 
     private fun chat(message: String, wsSession: WebSocketSession, recommenderSession: RecommenderSession) {
-        val stream = assistant.chat(message, recommenderSession.memoryId)
+        val chatResult = assistant.chatSync(message, recommenderSession.memoryId)
+        logger.info("Completed assistant response. Costs $ ${openAICostCalculator.calculateCostDollars(chatResult.tokenUsage())}. ${chatResult.tokenUsage()}")
+        wsSession.sendMessage(TextMessage(chatResult.content().message))
+        wsSession.sendMessage(TextMessage("EOS"))
         //TODO: What to do with errors?
-        stream
-            .onNext { modelResponse -> wsSession.sendMessage(TextMessage(modelResponse)) }
-            .onComplete {
-                //TODO: Should we abstract this into a completionReporter class?
-                logger.info("Completed assistant response. Costs $ ${openAICostCalculator.calculateCostDollars(it.tokenUsage())}. ${it.tokenUsage()}")
-                wsSession.sendMessage(TextMessage("EOS"))
-            }
-            .ignoreErrors()
-            .start()
     }
 }

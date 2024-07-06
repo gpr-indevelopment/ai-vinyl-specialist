@@ -1,8 +1,8 @@
 package io.github.gprindevelopment.recommender.assistant
 
 import dev.langchain4j.service.MemoryId
+import dev.langchain4j.service.Result
 import dev.langchain4j.service.SystemMessage
-import dev.langchain4j.service.TokenStream
 import dev.langchain4j.service.UserMessage
 import dev.langchain4j.service.spring.AiService
 import dev.langchain4j.service.spring.AiServiceWiringMode
@@ -11,7 +11,6 @@ import java.util.*
 //TODO: Can we specify a specific format for a recommendation output?
 @AiService(
     wiringMode = AiServiceWiringMode.EXPLICIT,
-    streamingChatModel = "openAiStreamingChatModel",
     chatModel = "openAiChatModel",
     chatMemoryProvider = "chatMemoryProvider",
     tools = ["toolsProvider"]
@@ -122,10 +121,6 @@ interface OpenAIVinylRecommenderAssistant {
     }
 
     @SystemMessage(SYSTEM_MESSAGE)
-    fun chat(@UserMessage message: String,
-             @MemoryId memoryId: UUID = UUID.randomUUID()): TokenStream
-
-    @SystemMessage(SYSTEM_MESSAGE)
     fun chatSync(@UserMessage message: String,
-             @MemoryId memoryId: UUID = UUID.randomUUID()): RecommenderResponse
+             @MemoryId memoryId: UUID = UUID.randomUUID()): Result<RecommenderResponse>
 }

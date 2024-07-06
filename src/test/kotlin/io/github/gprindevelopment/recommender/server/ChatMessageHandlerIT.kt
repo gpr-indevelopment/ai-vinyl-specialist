@@ -1,7 +1,10 @@
 package io.github.gprindevelopment.recommender.server
 
 import com.ninjasquad.springmockk.MockkBean
+import dev.langchain4j.model.output.TokenUsage
+import dev.langchain4j.service.Result
 import io.github.gprindevelopment.recommender.assistant.OpenAIVinylRecommenderAssistant
+import io.github.gprindevelopment.recommender.assistant.RecommenderResponse
 import io.mockk.every
 import org.awaitility.Awaitility.with
 import org.junit.jupiter.api.Test
@@ -28,7 +31,10 @@ class ChatMessageHandlerIT {
     fun `Should successfully communicate through websockets`() {
         val expectedResponse = "Welcome to the recommender!"
         val handler = TestWsHandler()
-        every { assistant.chat(any(), any()) } returns TestTokenStream(expectedResponse)
+        every { assistant.chatSync(any(), any()) } returns Result.builder<RecommenderResponse>()
+            .tokenUsage(TokenUsage(0, 0))
+            .content(RecommenderResponse(expectedResponse, emptyList()))
+            .build()
 
         StandardWebSocketClient().execute(handler, "ws://localhost:$port/chat")
             .join()

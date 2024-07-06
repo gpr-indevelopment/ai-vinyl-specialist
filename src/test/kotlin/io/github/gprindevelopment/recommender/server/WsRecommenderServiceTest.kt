@@ -1,7 +1,10 @@
 package io.github.gprindevelopment.recommender.server
 
+import dev.langchain4j.model.output.TokenUsage
+import dev.langchain4j.service.Result
 import io.github.gprindevelopment.recommender.assistant.OpenAICostCalculator
 import io.github.gprindevelopment.recommender.assistant.OpenAIVinylRecommenderAssistant
+import io.github.gprindevelopment.recommender.assistant.RecommenderResponse
 import io.mockk.*
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
@@ -33,12 +36,15 @@ class WsRecommenderServiceTest {
         val memoryId = UUID.randomUUID()
         val expectedRecommenderSession = RecommenderSession(memoryId)
         val expectedAiMessage = "I am an AI and I will recommend!"
-        val expectedChatStream = TestTokenStream(expectedAiMessage)
+        val expectedResult = Result.builder<RecommenderResponse>()
+            .tokenUsage(TokenUsage(0, 0))
+            .content(RecommenderResponse(expectedAiMessage, emptyList()))
+            .build()
 
         every { wsSession.attributes } returns mutableMapOf(
             "recommenderSession" to expectedRecommenderSession
         ) as Map<String, Any>
-        every { assistant.chat(inputString, memoryId) } returns expectedChatStream
+        every { assistant.chatSync(inputString, memoryId) } returns expectedResult
         every { wsSession.sendMessage(any()) } just runs
         every { openAICostCalculator.calculateCostDollars(any()) } returns 0.0
 
@@ -53,12 +59,15 @@ class WsRecommenderServiceTest {
         val memoryId = UUID.randomUUID()
         val expectedRecommenderSession = RecommenderSession(memoryId)
         val expectedAiMessage = "I am an AI and I will recommend!"
-        val expectedChatStream = TestTokenStream(expectedAiMessage)
+        val expectedResult = Result.builder<RecommenderResponse>()
+            .tokenUsage(TokenUsage(0, 0))
+            .content(RecommenderResponse(expectedAiMessage, emptyList()))
+            .build()
 
         every { wsSession.attributes } returns mutableMapOf(
             "recommenderSession" to expectedRecommenderSession
         ) as Map<String, Any>
-        every { assistant.chat(inputString, memoryId) } returns expectedChatStream
+        every { assistant.chatSync(inputString, memoryId) } returns expectedResult
         every { wsSession.sendMessage(any()) } just runs
         every { openAICostCalculator.calculateCostDollars(any()) } returns 0.0
 
@@ -70,13 +79,16 @@ class WsRecommenderServiceTest {
     fun `Should successfully start a websocket session`() {
         val session = mockk<WebSocketSession>()
         val expectedHelloMessage = "Hello!"
-        val expectedChatStream = TestTokenStream("Hello from AI!")
         val memoryIdSlot = slot<UUID>()
+        val expectedResult = Result.builder<RecommenderResponse>()
+            .tokenUsage(TokenUsage(0, 0))
+            .content(RecommenderResponse("Hello from AI!", emptyList()))
+            .build()
 
         every { session.uri } returns URI.create("ws://localhost:8080/chat")
         every { session.attributes } returns mutableMapOf()
         every { session.sendMessage(any()) } just runs
-        every { assistant.chat(eq(expectedHelloMessage), capture(memoryIdSlot)) } returns expectedChatStream
+        every { assistant.chatSync(eq(expectedHelloMessage), capture(memoryIdSlot)) } returns expectedResult
         every { openAICostCalculator.calculateCostDollars(any()) } returns 0.0
 
         wsRecommenderService.setupSession(session)
