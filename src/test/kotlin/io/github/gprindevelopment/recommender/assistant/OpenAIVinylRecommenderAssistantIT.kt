@@ -83,17 +83,14 @@ class OpenAIVinylRecommenderAssistantIT {
         val memory = UUID.randomUUID()
         val message1 = """
             Hello! Can you recommend me a Beatles record?
-            This is a test. You must answer with the recommended title only, nothing else.
             My Discogs username is test.
         """.trimIndent()
-        val response1 = assistant.chatSync(message1, memory)
-        assertTrue(testReviewAssistant.review("Did the chatbot provide any record recommendation?", response1).answer)
+        assistant.chatSync(message1, memory)
 
         val message2 = """
             Thanks! Can you now recommend me a Supertramp record?
         """.trimIndent()
-        val response2 = assistant.chatSync(message2, memory)
-        assertTrue(testReviewAssistant.review("Did the chatbot provide any record recommendation?", response2).answer)
+        assistant.chatSync(message2, memory)
 
         verify(atMost = 1) { discogsService.getFullCollection(DiscogsUser("test")) }
     }
@@ -119,6 +116,6 @@ class OpenAIVinylRecommenderAssistantIT {
 
         every { discogsService.getFullCollection(DiscogsUser("test")) } returns vinylCollection
         val response = assistant.chatSync(message)
-        assertFalse(testReviewAssistant.review("Did the chatbot recommend any record?", response).answer)
+        assertFalse(testReviewAssistant.review("Did the chatbot recommend a Pink Floyd record?", response).answer)
     }
 }

@@ -53,6 +53,22 @@ interface TestReviewAssistant {
             "answer": null,
             "reasoning": "I am not able to answer with TRUE or FALSE, as the question is not a yes or no question."
         }
+        
+        ### Example 5: Answers FALSE about a chatbot message ###
+        Chatbot message: "A Pink Floyd record is not in your collection. I can recommend other records if you'd like"
+        Question: "Did the chatbot recommend any record?"
+        Reviewer: {
+            "answer": false,
+            "reasoning": "The chatbot mentioned it can recommend other records, but did not recommend any"
+        }
+        
+        ### Example 6: Answers TRUE about a chatbot message ###
+        Chatbot message: "From your collection, I recommend Abbey Road by The Beatles. It is a classic album that you would enjoy adding to your collection."
+        Question: "Was there a single recommended record from the Beatles, and no other records?"
+        Reviewer: {
+            "answer": true,
+            "reasoning": "The chatbot Abbey Road by the Beatles and no other record"
+        }
     """)
     fun review(@UserMessage question: String, @V("chatBotMessage") chatBotMessage: String): ReviewResult
 }
