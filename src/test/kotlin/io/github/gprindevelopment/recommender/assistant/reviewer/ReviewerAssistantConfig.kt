@@ -13,6 +13,7 @@ class ReviewerAssistantConfig {
     fun openAiTestReviewerChatModel(@Value("\${assistant.openai.apiKey}") apiKey: String,
                                     @Value("\${assistant.openai.modelName}") modelName: String,
                                     @Value("\${assistant.openai.timeout}") timeout: Duration,
+                                    @Value("\${assistant.openai.logResponses}") logResponses: Boolean,
                                     @Value("\${assistant.openai.logRequests}") logRequests: Boolean): OpenAiChatModel {
         return OpenAiChatModel
             .builder()
@@ -20,8 +21,8 @@ class ReviewerAssistantConfig {
             .apiKey(apiKey)
             .modelName(modelName)
             .timeout(timeout)
+            .logResponses(logResponses)
             .logRequests(logRequests)
-            .logResponses(true)
             .build()
     }
 }

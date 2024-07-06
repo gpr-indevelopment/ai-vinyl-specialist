@@ -14,13 +14,16 @@ class OpenAIAssistantConfig {
     fun openAiStreamingChatModel(@Value("\${assistant.openai.apiKey}") apiKey: String,
                                  @Value("\${assistant.openai.modelName}") modelName: String,
                                  @Value("\${assistant.openai.timeout}") timeout: Duration,
+                                 @Value("\${assistant.openai.logResponses}") logResponses: Boolean,
                                  @Value("\${assistant.openai.logRequests}") logRequests: Boolean
     ): OpenAiStreamingChatModel {
         return OpenAiStreamingChatModel
             .builder()
+            .responseFormat("json_object")
             .apiKey(apiKey)
             .modelName(modelName)
             .timeout(timeout)
+            .logResponses(logResponses)
             .logRequests(logRequests)
             .build()
     }
@@ -29,13 +32,17 @@ class OpenAIAssistantConfig {
     fun openAiChatModel(@Value("\${assistant.openai.apiKey}") apiKey: String,
                                  @Value("\${assistant.openai.modelName}") modelName: String,
                                  @Value("\${assistant.openai.timeout}") timeout: Duration,
+                                 @Value("\${assistant.openai.logResponses}") logResponses: Boolean,
                                  @Value("\${assistant.openai.logRequests}") logRequests: Boolean
+
     ): OpenAiChatModel {
         return OpenAiChatModel
             .builder()
+            .responseFormat("json_object")
             .apiKey(apiKey)
             .modelName(modelName)
             .timeout(timeout)
+            .logResponses(logResponses)
             .logRequests(logRequests)
             .build()
     }

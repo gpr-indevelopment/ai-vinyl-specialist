@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
 import java.util.*
+import kotlin.test.assertContains
 import kotlin.test.assertTrue
 
 @SpringBootTest
@@ -49,7 +50,7 @@ class OpenAIVinylRecommenderAssistantIT {
 
         every { discogsService.getFullCollection(DiscogsUser("test")) } returns vinylCollection
         val response = assistant.chatSync(message)
-        assertTrue(testReviewAssistant.review("The chatbot recommended a single record from the Beatles, and no other records", response).answer)
+        assertTrue(testReviewAssistant.review("The chatbot recommended a single record from the Beatles, and no other records", response.message).answer)
     }
 
     @Test
@@ -59,7 +60,7 @@ class OpenAIVinylRecommenderAssistantIT {
         """.trimIndent()
 
         val response = assistant.chatSync(message)
-        assertTrue(testReviewAssistant.review("The chatbot asked for a Discogs username instead of providing a recommendation", response).answer)
+        assertTrue(testReviewAssistant.review("The chatbot asked for a Discogs username instead of providing a recommendation", response.message).answer)
 
         verify(inverse = true) { discogsService.getFullCollection(any()) }
     }
@@ -73,7 +74,7 @@ class OpenAIVinylRecommenderAssistantIT {
 
         every { discogsService.getFullCollection(DiscogsUser("test")) } returns emptyList()
         val response = assistant.chatSync(message)
-        assertTrue(testReviewAssistant.review("The chatbot did not make any recommendations", response).answer)
+        assertTrue(testReviewAssistant.review("The chatbot did not make any recommendations", response.message).answer)
     }
 
     @Test
@@ -81,8 +82,7 @@ class OpenAIVinylRecommenderAssistantIT {
         every { discogsService.getFullCollection(DiscogsUser("test")) } returns vinylCollection
         val memory = UUID.randomUUID()
         val message1 = """
-            Hello! Can you recommend me a Beatles record?
-            My Discogs username is test.
+            Hello! Can you recommend me a Beatles record? My Discogs username is test.
         """.trimIndent()
         assistant.chatSync(message1, memory)
 
@@ -103,7 +103,7 @@ class OpenAIVinylRecommenderAssistantIT {
 
         every { discogsService.getFullCollection(DiscogsUser("test")) } returns vinylCollection
         val response = assistant.chatSync(message)
-        assertTrue(testReviewAssistant.review("The chatbot recommended 3 records from The Beatles", response).answer)
+        assertTrue(testReviewAssistant.review("The chatbot recommended 3 records from The Beatles", response.message).answer)
     }
 
     @Test
@@ -115,6 +115,20 @@ class OpenAIVinylRecommenderAssistantIT {
 
         every { discogsService.getFullCollection(DiscogsUser("test")) } returns vinylCollection
         val response = assistant.chatSync(message)
-        assertTrue(testReviewAssistant.review("The chatbot did not recommend a Pink Floyd record", response).answer)
+        assertTrue(testReviewAssistant.review("The chatbot did not recommend a Pink Floyd record", response.message).answer)
+    }
+
+    @Test
+    fun `Recommendations should be mentioned in message and recommendations field`() {
+        val message = """
+            Hello! Can you recommend me a Sting record?
+            My Discogs username is test.
+        """.trimIndent()
+
+        every { discogsService.getFullCollection(DiscogsUser("test")) } returns vinylCollection
+        val response = assistant.chatSync(message)
+        assertContains(response.message, "Sting")
+        assertContains(response.message, "Bring On The Night")
+        assertContains(response.recommendations, VinylRecord("Bring On The Night", "Sting"))
     }
 }
