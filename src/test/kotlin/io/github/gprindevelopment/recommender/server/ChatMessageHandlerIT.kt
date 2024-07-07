@@ -29,6 +29,7 @@ class ChatMessageHandlerIT {
 
     @Test
     fun `Should successfully communicate with JSON through websockets`() {
+        val expectedUserMessage = "Hello!"
         val expectedResponse = "Welcome to the recommender!"
         val expectedResponseJson = "{\"message\":\"Welcome to the recommender!\",\"recommendations\":[]}"
         val handler = TestWsHandler()
@@ -37,13 +38,14 @@ class ChatMessageHandlerIT {
             .content(RecommenderResponse(expectedResponse, emptyList()))
             .build()
 
-        StandardWebSocketClient().execute(handler, "ws://localhost:$port/chat")
+        val session = StandardWebSocketClient().execute(handler, "ws://localhost:$port/chat")
             .join()
+        session.sendMessage(TextMessage(expectedUserMessage))
         with()
             .atMost(Duration.ofSeconds(10))
             .await()
             .untilAsserted {
-                assertEquals(2, handler.messagesReceived.size)
+                assertEquals(1, handler.messagesReceived.size)
                 assertContains(handler.messagesReceived, expectedResponseJson)
             }
     }

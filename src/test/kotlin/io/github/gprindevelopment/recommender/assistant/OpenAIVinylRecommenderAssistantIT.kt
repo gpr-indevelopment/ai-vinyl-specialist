@@ -7,6 +7,7 @@ import io.github.gprindevelopment.recommender.discogs.DiscogsUser
 import io.github.gprindevelopment.recommender.domain.VinylRecord
 import io.mockk.every
 import io.mockk.verify
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -19,6 +20,7 @@ import kotlin.test.assertTrue
 
 @SpringBootTest
 @ActiveProfiles("test")
+@Disabled("For cost savings, disabled until AI is changed")
 class OpenAIVinylRecommenderAssistantIT {
 
     @Autowired
