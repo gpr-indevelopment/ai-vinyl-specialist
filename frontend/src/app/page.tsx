@@ -6,7 +6,6 @@ import { useTheme } from "antd-style";
 import { useEffect, useState, useRef } from "react";
 import { Card } from "antd";
 import Meta from "antd/es/card/Meta";
-import Image from "next/image";
 
 export default function Home() {
   const wsSessionRef = useRef<WebSocket | null>(null);
@@ -20,7 +19,6 @@ export default function Home() {
 
   useEffect(() => {
     let isDevEnv = process.env.NEXT_PUBLIC_ENVIRONMENT === "local";
-    console.log(process.env.NEXT_PUBLIC_ENVIRONMENT);
     let wsAddress = isDevEnv
       ? "ws://localhost:8080/chat"
       : "ws://" + location.host + "/chat";
@@ -49,7 +47,6 @@ export default function Home() {
         request={async (messages) => {
           return new Promise<Response>((resolve) => {
             if (!wsSessionRef.current) return;
-            console.log(messages[messages.length - 1].content as string);
             wsSessionRef.current.addEventListener("message", function (event) {
               setRecommendations(
                 recommendations.concat(JSON.parse(event.data).recommendations)
