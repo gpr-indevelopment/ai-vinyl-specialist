@@ -25,7 +25,6 @@ class OpenAIAssistantConfig {
             .timeout(timeout)
             .logResponses(logResponses)
             .logRequests(logRequests)
-            .temperature(0.2)
             .build()
     }
 }
