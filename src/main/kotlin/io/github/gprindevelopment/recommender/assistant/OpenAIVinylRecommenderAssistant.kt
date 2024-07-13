@@ -13,7 +13,8 @@ import java.util.*
     wiringMode = AiServiceWiringMode.EXPLICIT,
     chatModel = "openAiChatModel",
     chatMemoryProvider = "chatMemoryProvider",
-    tools = ["discogsToolsProvider"]
+    tools = ["discogsToolsProvider"],
+    contentRetriever = "googleSearchContentRetriever"
 )
 interface OpenAIVinylRecommenderAssistant {
 
@@ -116,6 +117,13 @@ interface OpenAIVinylRecommenderAssistant {
                             "releaseId": 391322
                         }
                     ]
+                }
+                
+        ### Example 7: Collector provides a Discogs username, you are able to relevant info on the record ###
+        Collector: "Hello! What are the tracks in the Animals record by Pink Floyd? My Discogs username is test."
+        David: {
+                    "message": "Hello! I am David, a vinyl records specialist. I can help you with that! Thanks for sharing your Discogs username. Here are the tracks from that album:\\n\\n1. Pigs on the Wing (Part One)\\n\\n2. Dogs\\n\\n3.Pigs (Three Different Ones)\\n\\n4.Sheep\\n\\n5.Pigs on the Wing (Part Two)",
+                    "recommendations": []
                 }
     """
     }

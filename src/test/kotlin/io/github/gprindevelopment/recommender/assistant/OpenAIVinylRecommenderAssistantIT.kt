@@ -7,7 +7,6 @@ import io.github.gprindevelopment.recommender.discogs.DiscogsUser
 import io.github.gprindevelopment.recommender.discogs.SimpleVinylRecord
 import io.mockk.every
 import io.mockk.verify
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -19,7 +18,6 @@ import kotlin.test.assertTrue
 
 @SpringBootTest
 @ActiveProfiles("test")
-@Disabled("For cost savings, disabled until AI is changed")
 class OpenAIVinylRecommenderAssistantIT {
 
     @Autowired
@@ -41,7 +39,8 @@ class OpenAIVinylRecommenderAssistantIT {
         SimpleVinylRecord("Abbey Road", "The Beatles", 7),
         SimpleVinylRecord("1962-1966", "The Beatles", 8),
         SimpleVinylRecord("1967-1970", "The Beatles", 9),
-        SimpleVinylRecord("Let It Be", "The Beatles", 10)
+        SimpleVinylRecord("Let It Be", "The Beatles", 10),
+        SimpleVinylRecord("Frances the Mute", "The Mars Volta", 11)
     )
 
     @Test
@@ -140,5 +139,20 @@ class OpenAIVinylRecommenderAssistantIT {
         val response = assistant.chatSync(message)
         assertFalse(response.message.contains(vinylCollection.first { it.title == "Bring On The Night" }.releaseId.toString()))
         assertContains(response.recommendations, SimpleVinylRecord("Bring On The Night", "Sting", vinylCollection.first { it.title == "Bring On The Night" }.releaseId))
+    }
+
+    @Test
+    fun `Should be able to answer the list of tracks inside a record using web search`() {
+        val message = """
+            Hello! What are the tracks in the Frances the Mute record by The Mars Volta? My Discogs username is test.
+        """.trimIndent()
+
+        every { discogsService.getFullCollection(DiscogsUser("test")) } returns vinylCollection
+        val response = assistant.chatSync(message)
+        assertContains(response.message, "Vismund Cygnus")
+        assertContains(response.message, "The Widow")
+        assertContains(response.message, "L'Via")
+        assertContains(response.message, "Miranda That Ghost Just Isn't Holy Anymore")
+        assertContains(response.message, "Cassandra Gemini")
     }
 }
