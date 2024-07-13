@@ -13,10 +13,10 @@ import org.junit.jupiter.api.extension.ExtendWith
 import kotlin.test.assertEquals
 
 @ExtendWith(MockKExtension::class)
-class ToolsProviderTest {
+class DiscogsToolsProviderTest {
 
     @InjectMockKs
-    private lateinit var toolsProvider: ToolsProvider
+    private lateinit var toolsProvider: DiscogsToolsProvider
 
     @MockK
     private lateinit var discogsService: DiscogsService

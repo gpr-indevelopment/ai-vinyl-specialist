@@ -8,7 +8,7 @@ import io.github.gprindevelopment.recommender.discogs.SimpleVinylRecord
 import org.springframework.stereotype.Component
 
 @Component
-class ToolsProvider(
+class DiscogsToolsProvider(
     val discogsService: DiscogsService
 ) {
 
