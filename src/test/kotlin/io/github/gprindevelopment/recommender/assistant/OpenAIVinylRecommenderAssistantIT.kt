@@ -131,14 +131,14 @@ class OpenAIVinylRecommenderAssistantIT {
     }
 
     @Test
-    fun `Cover image should be added to the recommendation object, but not the message`() {
+    fun `Release ID should be added to the recommendation object, but not the message`() {
         val message = """
             Hello! Can you recommend me a Sting record? My Discogs username is test.
         """.trimIndent()
 
         every { discogsService.getFullCollection(DiscogsUser("test")) } returns vinylCollection
         val response = assistant.chatSync(message)
-        assertFalse(response.message.contains("https://localhost/bring-on-the-night.jpg"))
+        assertFalse(response.message.contains(vinylCollection.first { it.title == "Bring On The Night" }.releaseId.toString()))
         assertContains(response.recommendations, SimpleVinylRecord("Bring On The Night", "Sting", vinylCollection.first { it.title == "Bring On The Night" }.releaseId))
     }
 }
