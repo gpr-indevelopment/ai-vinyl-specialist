@@ -1,14 +1,11 @@
 package io.github.gprindevelopment.recommender.discogs
 
-import io.github.gprindevelopment.recommender.discogs.DiscogsResponseMother.Companion.DEFAULT_COVER_IMAGE_URL
-import io.github.gprindevelopment.recommender.domain.VinylRecord
 import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import java.net.URL
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
 
@@ -29,8 +26,8 @@ class DiscogsServiceTest {
 
         val vinylRecords = discogsService.getFullCollection(user)
         assertEquals(2, vinylRecords.size)
-        assertContains(vinylRecords, VinylRecord("Abbey Road", "The Beatles", DEFAULT_COVER_IMAGE_URL))
-        assertContains(vinylRecords, VinylRecord("Let It Be", "The Beatles", DEFAULT_COVER_IMAGE_URL))
+        assertContains(vinylRecords, SimpleVinylRecord("Abbey Road", "The Beatles", 1))
+        assertContains(vinylRecords, SimpleVinylRecord("Let It Be", "The Beatles", 2))
     }
 
     @Test
@@ -60,8 +57,6 @@ class DiscogsResponseMother {
 
     companion object {
         const val DEFAULT_COVER_IMAGE = "http://localhost/some-cover-image-url"
-
-        val  DEFAULT_COVER_IMAGE_URL = URL(DEFAULT_COVER_IMAGE)
     }
 
     fun emptyDiscogsResponse(): DiscogsCollectionResponse {
@@ -71,7 +66,9 @@ class DiscogsResponseMother {
         )
     }
 
-    fun discogsResponse(page: Int = 1, totalPages: Int = 3, coverImage: String = DEFAULT_COVER_IMAGE): DiscogsCollectionResponse {
+    fun discogsResponse(page: Int = 1,
+                        totalPages: Int = 3,
+                        coverImage: String = DEFAULT_COVER_IMAGE): DiscogsCollectionResponse {
         return DiscogsCollectionResponse(
             Pagination(page, totalPages, 3, 3 * totalPages),
             listOf(

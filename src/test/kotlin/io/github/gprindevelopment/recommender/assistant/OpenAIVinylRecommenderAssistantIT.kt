@@ -4,7 +4,7 @@ import com.ninjasquad.springmockk.MockkBean
 import io.github.gprindevelopment.recommender.assistant.reviewer.TestReviewAssistant
 import io.github.gprindevelopment.recommender.discogs.DiscogsService
 import io.github.gprindevelopment.recommender.discogs.DiscogsUser
-import io.github.gprindevelopment.recommender.domain.VinylRecord
+import io.github.gprindevelopment.recommender.discogs.SimpleVinylRecord
 import io.mockk.every
 import io.mockk.verify
 import org.junit.jupiter.api.Disabled
@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
-import java.net.URL
 import java.util.*
 import kotlin.test.assertContains
 import kotlin.test.assertFalse
@@ -33,16 +32,16 @@ class OpenAIVinylRecommenderAssistantIT {
     private lateinit var testReviewAssistant: TestReviewAssistant
 
     private val vinylCollection = listOf(
-        VinylRecord("Zenyatta Mondatta", "The Police", URL("https://localhost/zenyatta-mondatta.jpg")),
-        VinylRecord("Paris", "Supertramp", URL("https://localhost/paris.jpg")),
-        VinylRecord("Bring On The Night", "Sting", URL("https://localhost/bring-on-the-night.jpg")),
-        VinylRecord("The Autobiography Of Supertramp", "Supertramp", URL("https://localhost/the-autobiography-of-supertramp.jpg")),
-        VinylRecord("Carpenters", "Carpenters", URL("https://localhost/carpenters.jpg")),
-        VinylRecord("An Evening With Silk Sonic", "Silk Sonic", URL("https://localhost/an-evening-with-silk-sonic.jpg")),
-        VinylRecord("Abbey Road", "The Beatles", URL("https://localhost/abbey-road.jpg")),
-        VinylRecord("1962-1966", "The Beatles", URL("https://localhost/1962-1966.jpg")),
-        VinylRecord("1967-1970", "The Beatles", URL("https://localhost/1967-1970.jpg")),
-        VinylRecord("Let It Be", "The Beatles", URL("https://localhost/let-it-be.jpg"))
+        SimpleVinylRecord("Zenyatta Mondatta", "The Police", 1),
+        SimpleVinylRecord("Paris", "Supertramp", 2),
+        SimpleVinylRecord("Bring On The Night", "Sting", 3),
+        SimpleVinylRecord("The Autobiography Of Supertramp", "Supertramp", 4),
+        SimpleVinylRecord("Carpenters", "Carpenters", 5),
+        SimpleVinylRecord("An Evening With Silk Sonic", "Silk Sonic", 6),
+        SimpleVinylRecord("Abbey Road", "The Beatles", 7),
+        SimpleVinylRecord("1962-1966", "The Beatles", 8),
+        SimpleVinylRecord("1967-1970", "The Beatles", 9),
+        SimpleVinylRecord("Let It Be", "The Beatles", 10)
     )
 
     @Test
@@ -128,7 +127,7 @@ class OpenAIVinylRecommenderAssistantIT {
         val response = assistant.chatSync(message)
         assertContains(response.message, "Sting")
         assertContains(response.message, "Bring On The Night")
-        assertContains(response.recommendations, VinylRecord("Bring On The Night", "Sting", URL("https://localhost/bring-on-the-night.jpg")))
+        assertContains(response.recommendations, SimpleVinylRecord("Bring On The Night", "Sting", vinylCollection.first { it.title == "Bring On The Night" }.releaseId))
     }
 
     @Test
@@ -140,6 +139,6 @@ class OpenAIVinylRecommenderAssistantIT {
         every { discogsService.getFullCollection(DiscogsUser("test")) } returns vinylCollection
         val response = assistant.chatSync(message)
         assertFalse(response.message.contains("https://localhost/bring-on-the-night.jpg"))
-        assertContains(response.recommendations, VinylRecord("Bring On The Night", "Sting", URL("https://localhost/bring-on-the-night.jpg")))
+        assertContains(response.recommendations, SimpleVinylRecord("Bring On The Night", "Sting", vinylCollection.first { it.title == "Bring On The Night" }.releaseId))
     }
 }

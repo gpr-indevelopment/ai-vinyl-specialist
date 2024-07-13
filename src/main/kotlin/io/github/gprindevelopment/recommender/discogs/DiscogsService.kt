@@ -1,15 +1,13 @@
 package io.github.gprindevelopment.recommender.discogs
 
-import io.github.gprindevelopment.recommender.domain.VinylRecord
 import org.springframework.stereotype.Service
-import java.net.URL
 
 @Service
 class DiscogsService(
     val discogsClient: DiscogsClient
 ) {
-    fun getFullCollection(user: DiscogsUser): List<VinylRecord> {
-        val vinylRecords = mutableListOf<VinylRecord>()
+    fun getFullCollection(user: DiscogsUser): List<SimpleVinylRecord> {
+        val vinylRecords = mutableListOf<SimpleVinylRecord>()
         var currentPage = 0
         var response: DiscogsCollectionResponse
         do {
@@ -21,9 +19,9 @@ class DiscogsService(
         return vinylRecords
     }
 
-    private fun DiscogsCollectionResponse.toVinylRecords(): List<VinylRecord> {
+    private fun DiscogsCollectionResponse.toVinylRecords(): List<SimpleVinylRecord> {
         return this.releases
             .filter { it.basicInformation.formats.any { format -> format.isVinyl() } }
-            .map { VinylRecord(it.basicInformation.title, it.basicInformation.artists.first().name, URL(it.basicInformation.coverImage)) }
+            .map { SimpleVinylRecord(it.basicInformation.title, it.basicInformation.artists.first().name, it.id) }
     }
 }

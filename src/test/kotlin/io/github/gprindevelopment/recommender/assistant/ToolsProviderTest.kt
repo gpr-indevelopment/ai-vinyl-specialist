@@ -2,7 +2,7 @@ package io.github.gprindevelopment.recommender.assistant
 
 import io.github.gprindevelopment.recommender.discogs.DiscogsService
 import io.github.gprindevelopment.recommender.discogs.DiscogsUser
-import io.github.gprindevelopment.recommender.domain.VinylRecord
+import io.github.gprindevelopment.recommender.discogs.SimpleVinylRecord
 import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
@@ -24,7 +24,7 @@ class ToolsProviderTest {
     @Test
     fun `Tool should fetch full vinyl record collection`() {
         val discogsUsername = "test"
-        val expected = emptyList<VinylRecord>()
+        val expected = emptyList<SimpleVinylRecord>()
 
         every { discogsService.getFullCollection(DiscogsUser(discogsUsername)) } returns expected
 
