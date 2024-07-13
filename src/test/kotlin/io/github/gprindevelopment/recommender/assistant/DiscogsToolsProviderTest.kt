@@ -1,5 +1,6 @@
 package io.github.gprindevelopment.recommender.assistant
 
+import io.github.gprindevelopment.recommender.discogs.DiscogsReleaseResponse
 import io.github.gprindevelopment.recommender.discogs.DiscogsService
 import io.github.gprindevelopment.recommender.discogs.DiscogsUser
 import io.github.gprindevelopment.recommender.discogs.SimpleVinylRecord
@@ -31,5 +32,16 @@ class DiscogsToolsProviderTest {
         val actual = toolsProvider.fetchFullVinylRecordCollection(discogsUsername)
         assertEquals(expected, actual)
         verify { discogsService.getFullCollection(DiscogsUser(discogsUsername)) }
+    }
+
+    @Test
+    fun `Tool should fetch get Discogs release from a release ID`() {
+        val releaseId = 1
+        val expectedResponse = DiscogsReleaseResponse()
+
+        every { discogsService.getRelease(releaseId) } returns expectedResponse
+
+        val actual = toolsProvider.fetchRelease(releaseId)
+        assertEquals(expectedResponse, actual)
     }
 }

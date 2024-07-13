@@ -3,14 +3,14 @@ package io.github.gprindevelopment.recommender.discogs
 import com.fasterxml.jackson.annotation.JsonProperty
 
 data class DiscogsReleaseResponse(
-    val artists: List<Artist>,
-    val notes: String,
-    val genres: List<String>,
-    val styles: List<String>,
+    val artists: List<Artist> = emptyList(),
+    val notes: String? = null,
+    val genres: List<String> = emptyList(),
+    val styles: List<String> = emptyList(),
     @JsonProperty("tracklist")
-    val trackList: List<Track>,
+    val trackList: List<Track> = emptyList(),
     @JsonProperty("extraartists")
-    val extraArtists: List<Artist>,
+    val extraArtists: List<Artist> = emptyList()
 )
 
 data class Artist(

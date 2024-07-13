@@ -84,6 +84,16 @@ class DiscogsServiceTest {
         val actualEnrichedRecord = discogsService.enrichVinylRecord(record)
         assertEquals(expectedEnrichedRecord, actualEnrichedRecord)
     }
+
+    @Test
+    fun `Should get release from a given release ID`() {
+        val releaseId = 1
+        val expectedResponse = DiscogsReleaseResponse()
+
+        every { discogsService.getRelease(releaseId) } returns expectedResponse
+        val actualEnrichedRecord = discogsService.getRelease(releaseId)
+        assertEquals(expectedResponse, actualEnrichedRecord)
+    }
 }
 
 class DiscogsResponseMother {

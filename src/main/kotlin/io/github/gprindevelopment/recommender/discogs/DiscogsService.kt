@@ -31,6 +31,10 @@ class DiscogsService(
         return EnrichedVinylRecord(vinylRecord.title, vinylRecord.artist, vinylRecord.releaseId, release?.basicInformation?.coverImage?.let { URL(it) })
     }
 
+    fun getRelease(releaseId: Int): DiscogsReleaseResponse {
+        return discogsClient.getRelease(releaseId)
+    }
+
     private fun DiscogsCollectionResponse.toVinylRecords(): List<SimpleVinylRecord> {
         return this.releases
             .filter { it.basicInformation.formats.any { format -> format.isVinyl() } }
