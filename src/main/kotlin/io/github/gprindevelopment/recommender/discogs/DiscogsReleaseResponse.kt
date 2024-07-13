@@ -19,9 +19,9 @@ data class Artist(
 )
 
 data class Track(
-    val position: String,
     val title: String,
+    val position: String? = null,
     @JsonProperty("extraartists")
     val extraArtists: List<Artist>? = emptyList(),
-    val duration: String
+    val duration: String? = null
 )

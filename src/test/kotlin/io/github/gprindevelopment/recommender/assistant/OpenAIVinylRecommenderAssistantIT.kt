@@ -144,8 +144,19 @@ class OpenAIVinylRecommenderAssistantIT {
         val message = """
             Hello! What are the tracks in the Frances the Mute record by The Mars Volta? My Discogs username is test.
         """.trimIndent()
+        val releaseResponse = DiscogsReleaseResponse(
+            trackList = listOf(
+                Track("Vismund Cygnus"),
+                Track("The Widow"),
+                Track("L'Via"),
+                Track("Miranda That Ghost Just Isn't Holy Anymore"),
+                Track("Cassandra Gemini")
+            )
+        )
 
         every { discogsService.getFullCollection(DiscogsUser("test")) } returns vinylCollection
+        every { discogsService.getRelease(vinylCollection.first { it.title == "Frances the Mute" }.releaseId) } returns releaseResponse
+
         val response = assistant.chatSync(message)
         assertContains(response.message, "Vismund Cygnus")
         assertContains(response.message, "The Widow")
