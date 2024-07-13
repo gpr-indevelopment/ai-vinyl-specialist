@@ -18,7 +18,8 @@ class DiscogsToolsProvider(
         return discogsService.getFullCollection(DiscogsUser(discogsUsername))
     }
 
-    @Tool("Searches Discogs for full info on a record for a given release ID")
+    @Tool("""Searches Discogs for further info on a record for a given release ID. 
+        |It includes a summary and data on track list, genres, styles, and all artists involved in the making of the record""")
     fun fetchRelease(@P("Release ID") releaseId: Int): DiscogsReleaseResponse {
         return discogsService.getRelease(releaseId)
     }

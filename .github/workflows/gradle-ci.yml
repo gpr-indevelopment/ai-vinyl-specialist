@@ -38,6 +38,8 @@ jobs:
         OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         DISCOGS_API_KEY: ${{ secrets.DISCOGS_API_KEY }}
         DISCOGS_API_SECRET: ${{ secrets.DISCOGS_API_SECRET }}
+        GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+        GOOGLE_SEARCH_ENGINE_ID: ${{ secrets.GOOGLE_SEARCH_ENGINE_ID }}
       run: ./gradlew build
 
     # NOTE: The Gradle Wrapper is the default and recommended way to run Gradle (https://docs.gradle.org/current/userguide/gradle_wrapper.html).

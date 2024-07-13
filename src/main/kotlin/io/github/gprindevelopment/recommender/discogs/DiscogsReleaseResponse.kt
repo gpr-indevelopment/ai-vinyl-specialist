@@ -15,7 +15,7 @@ data class DiscogsReleaseResponse(
 
 data class Artist(
     val name: String,
-    val role: String
+    val role: String? = null
 )
 
 data class Track(

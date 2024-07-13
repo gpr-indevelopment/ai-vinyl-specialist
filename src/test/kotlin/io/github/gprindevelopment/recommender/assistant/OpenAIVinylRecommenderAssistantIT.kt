@@ -2,9 +2,7 @@ package io.github.gprindevelopment.recommender.assistant
 
 import com.ninjasquad.springmockk.MockkBean
 import io.github.gprindevelopment.recommender.assistant.reviewer.TestReviewAssistant
-import io.github.gprindevelopment.recommender.discogs.DiscogsService
-import io.github.gprindevelopment.recommender.discogs.DiscogsUser
-import io.github.gprindevelopment.recommender.discogs.SimpleVinylRecord
+import io.github.gprindevelopment.recommender.discogs.*
 import io.mockk.every
 import io.mockk.verify
 import org.junit.jupiter.api.Test
@@ -30,17 +28,17 @@ class OpenAIVinylRecommenderAssistantIT {
     private lateinit var testReviewAssistant: TestReviewAssistant
 
     private val vinylCollection = listOf(
-        SimpleVinylRecord("Zenyatta Mondatta", "The Police", 1),
-        SimpleVinylRecord("Paris", "Supertramp", 2),
-        SimpleVinylRecord("Bring On The Night", "Sting", 3),
-        SimpleVinylRecord("The Autobiography Of Supertramp", "Supertramp", 4),
-        SimpleVinylRecord("Carpenters", "Carpenters", 5),
-        SimpleVinylRecord("An Evening With Silk Sonic", "Silk Sonic", 6),
-        SimpleVinylRecord("Abbey Road", "The Beatles", 7),
-        SimpleVinylRecord("1962-1966", "The Beatles", 8),
-        SimpleVinylRecord("1967-1970", "The Beatles", 9),
-        SimpleVinylRecord("Let It Be", "The Beatles", 10),
-        SimpleVinylRecord("Frances the Mute", "The Mars Volta", 11)
+        SimpleVinylRecord("Zenyatta Mondatta", "The Police", 3077476),
+        SimpleVinylRecord("Paris", "Supertramp", 3189550),
+        SimpleVinylRecord("Bring On The Night", "Sting", 2848433),
+        SimpleVinylRecord("The Autobiography Of Supertramp", "Supertramp", 2884892),
+        SimpleVinylRecord("Carpenters", "Carpenters", 14108541),
+        SimpleVinylRecord("An Evening With Silk Sonic", "Silk Sonic", 24270173),
+        SimpleVinylRecord("Abbey Road", "The Beatles", 2607424),
+        SimpleVinylRecord("1962-1966", "The Beatles", 6455223),
+        SimpleVinylRecord("1967-1970", "The Beatles", 9425149),
+        SimpleVinylRecord("Let It Be", "The Beatles", 9011692),
+        SimpleVinylRecord("Frances the Mute", "The Mars Volta", 22544195)
     )
 
     @Test
@@ -154,5 +152,24 @@ class OpenAIVinylRecommenderAssistantIT {
         assertContains(response.message, "L'Via")
         assertContains(response.message, "Miranda That Ghost Just Isn't Holy Anymore")
         assertContains(response.message, "Cassandra Gemini")
+    }
+
+    @Test
+    fun `Should be able to answer about additional artists of a given record`() {
+        val message = """
+            Hello! Who made the cover for the Frances the Mute record by The Mars Volta? My Discogs username is test.
+        """.trimIndent()
+        val releaseResponse = DiscogsReleaseResponse(
+            artists = listOf(
+                Artist("The Mars Volta"),
+                Artist("Storm Thorgerson")
+            )
+        )
+
+        every { discogsService.getFullCollection(DiscogsUser("test")) } returns vinylCollection
+        every { discogsService.getRelease(vinylCollection.first { it.title == "Frances the Mute" }.releaseId) } returns releaseResponse
+
+        val response = assistant.chatSync(message)
+        assertContains(response.message, "Storm Thorgerson")
     }
 }
