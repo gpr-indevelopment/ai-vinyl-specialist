@@ -5,6 +5,7 @@ import io.github.gprindevelopment.recommender.assistant.reviewer.TestReviewAssis
 import io.github.gprindevelopment.recommender.discogs.*
 import io.mockk.every
 import io.mockk.verify
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -16,6 +17,7 @@ import kotlin.test.assertTrue
 
 @SpringBootTest
 @ActiveProfiles("test")
+@Disabled("Disabled for cost savings")
 class OpenAIVinylRecommenderAssistantIT {
 
     @Autowired
