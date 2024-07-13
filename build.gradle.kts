@@ -25,11 +25,13 @@ dependencyManagement {
 }
 
 dependencies {
+	val langChainVersion = "0.32.0"
 	implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
 	implementation("org.springframework.boot:spring-boot-starter-websocket")
-	implementation("dev.langchain4j:langchain4j-spring-boot-starter:0.31.0")
-	implementation("dev.langchain4j:langchain4j-ollama-spring-boot-starter:0.31.0")
-	implementation("dev.langchain4j:langchain4j-open-ai-spring-boot-starter:0.31.0")
+	implementation("dev.langchain4j:langchain4j-spring-boot-starter:${langChainVersion}")
+	implementation("dev.langchain4j:langchain4j-ollama-spring-boot-starter:${langChainVersion}")
+	implementation("dev.langchain4j:langchain4j-open-ai-spring-boot-starter:${langChainVersion}")
+	implementation("dev.langchain4j:langchain4j-web-search-engine-google-custom:${langChainVersion}")
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.springframework.boot:spring-boot-starter")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
