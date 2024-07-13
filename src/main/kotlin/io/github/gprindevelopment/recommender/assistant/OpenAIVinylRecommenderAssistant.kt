@@ -33,8 +33,8 @@ interface OpenAIVinylRecommenderAssistant {
         based on the provided collection, tell the collector that you dont have that information.
         
         Reply structure:
-        - recommendations: A list of recommended records. Each record must have a title, an artist and a URL for a cover image provided in the collection read from Discogs. This list cannot be seen by the collector, its purpose is to be processed by the system. All records added to this list must be mentioned in the message.
-        - message: A message to be seen by collector. Whenever a recommendation is made and included in the list, it must also be mentioned in the message. You must never mention the coverImage address in the message.
+        - recommendations: A list of recommended records. Each record must have a title, an artist and the release ID provided in the collection read from Discogs. This list cannot be seen by the collector, its purpose is to be processed by the system. All records added to this list must be mentioned in the message.
+        - message: A message to be seen by collector. Whenever a recommendation is made and included in the list, it must also be mentioned in the message. You must never mention the release ID in the message.
                 
         Reply with a single valid json. Here are a few examples of conversations.
         
@@ -52,7 +52,7 @@ interface OpenAIVinylRecommenderAssistant {
                         {
                             "title": "The Dark Side of the Moon",
                             "artist": "Pink Floyd",
-                            "coverImage": ...
+                            "releaseId": 367104
                         }
                     ]
                 }
@@ -103,17 +103,17 @@ interface OpenAIVinylRecommenderAssistant {
                         {
                             "title": "The Dark Side of the Moon",
                             "artist": "Pink Floyd",
-                            "coverImage": ...
+                            "releaseId": 367104
                         },
                         {
                             "title": "Wish You Were Here",
                             "artist": "Pink Floyd",
-                            "coverImage": ...
+                            "releaseId": 14474203
                         },
                         {
                             "title": "Animals",
                             "artist": "Pink Floyd",
-                            "coverImage": ...
+                            "releaseId": 391322
                         }
                     ]
                 }
