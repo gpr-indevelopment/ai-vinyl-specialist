@@ -6,5 +6,5 @@ data class EnrichedVinylRecord(
     val title: String,
     val artist: String,
     val releaseId: Int,
-    val coverImageUrl: URL? = null
+    val coverImage: URL? = null
 )
