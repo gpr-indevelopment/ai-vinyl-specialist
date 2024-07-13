@@ -13,8 +13,7 @@ import java.util.*
     wiringMode = AiServiceWiringMode.EXPLICIT,
     chatModel = "openAiChatModel",
     chatMemoryProvider = "chatMemoryProvider",
-    tools = ["discogsToolsProvider"],
-    contentRetriever = "googleSearchContentRetriever"
+    tools = ["discogsToolsProvider"]
 )
 interface OpenAIVinylRecommenderAssistant {
 
