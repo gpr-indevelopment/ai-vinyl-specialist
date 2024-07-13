@@ -30,9 +30,10 @@ class AssistantConfig {
             .csi(searchEngineId)
             .logRequests(logRequests)
             .build()
-        return WebSearchContentRetriever.builder()
+        val webRetriever = WebSearchContentRetriever.builder()
             .webSearchEngine(googleSearchEngine)
             .maxResults(3)
             .build()
+        return ErrorProofWebSearchContentRetriever(webRetriever)
     }
 }
