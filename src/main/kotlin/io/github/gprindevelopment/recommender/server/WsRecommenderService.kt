@@ -1,8 +1,8 @@
 package io.github.gprindevelopment.recommender.server
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import io.github.gprindevelopment.recommender.assistant.DiscogsAssistant
 import io.github.gprindevelopment.recommender.assistant.OpenAICostCalculator
-import io.github.gprindevelopment.recommender.assistant.OpenAIVinylRecommenderAssistant
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.web.socket.TextMessage
@@ -11,7 +11,7 @@ import java.util.*
 
 @Service
 class WsRecommenderService(
-    val assistant: OpenAIVinylRecommenderAssistant,
+    val assistant: DiscogsAssistant,
     val openAICostCalculator: OpenAICostCalculator,
     val objectMapper: ObjectMapper
 ) {
@@ -30,7 +30,7 @@ class WsRecommenderService(
     }
 
     private fun chat(message: String, wsSession: WebSocketSession, recommenderSession: RecommenderSession) {
-        val chatResult = assistant.chatSync(message, recommenderSession.memoryId)
+        val chatResult = assistant.chat(message, recommenderSession.memoryId)
         logger.info("Completed assistant response. Costs $ ${openAICostCalculator.calculateCostDollars(chatResult.tokenUsage())}. ${chatResult.tokenUsage()}")
         wsSession.sendMessage(TextMessage(objectMapper.writeValueAsString(chatResult.content())))
         //TODO: What to do with errors?

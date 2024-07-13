@@ -3,9 +3,9 @@ package io.github.gprindevelopment.recommender.server
 import com.fasterxml.jackson.databind.ObjectMapper
 import dev.langchain4j.model.output.TokenUsage
 import dev.langchain4j.service.Result
+import io.github.gprindevelopment.recommender.assistant.DiscogsAssistant
+import io.github.gprindevelopment.recommender.assistant.EnrichedRecommenderResponse
 import io.github.gprindevelopment.recommender.assistant.OpenAICostCalculator
-import io.github.gprindevelopment.recommender.assistant.OpenAIVinylRecommenderAssistant
-import io.github.gprindevelopment.recommender.assistant.RecommenderResponse
 import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
@@ -29,7 +29,7 @@ class WsRecommenderServiceTest {
     private lateinit var wsRecommenderService: WsRecommenderService
 
     @MockK
-    private lateinit var assistant: OpenAIVinylRecommenderAssistant
+    private lateinit var assistant: DiscogsAssistant
 
     @MockK
     private lateinit var openAICostCalculator: OpenAICostCalculator
@@ -44,15 +44,15 @@ class WsRecommenderServiceTest {
         val memoryId = UUID.randomUUID()
         val expectedRecommenderSession = RecommenderSession(memoryId)
         val expectedAiMessage = "I am an AI and I will recommend!"
-        val expectedResult = Result.builder<RecommenderResponse>()
+        val expectedResult = Result.builder<EnrichedRecommenderResponse>()
             .tokenUsage(TokenUsage(0, 0))
-            .content(RecommenderResponse(expectedAiMessage, emptyList()))
+            .content(EnrichedRecommenderResponse(expectedAiMessage, emptyList()))
             .build()
 
         every { wsSession.attributes } returns mutableMapOf(
             "recommenderSession" to expectedRecommenderSession
         ) as Map<String, Any>
-        every { assistant.chatSync(inputString, memoryId) } returns expectedResult
+        every { assistant.chat(inputString, memoryId) } returns expectedResult
         every { wsSession.sendMessage(TextMessage("{\"message\":\"I am an AI and I will recommend!\",\"recommendations\":[]}")) } just runs
         every { openAICostCalculator.calculateCostDollars(any()) } returns 0.0
 
