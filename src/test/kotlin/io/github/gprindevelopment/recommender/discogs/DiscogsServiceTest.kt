@@ -4,6 +4,9 @@ import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
+import io.mockk.just
+import io.mockk.runs
+import io.mockk.verify
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import java.net.URL
@@ -27,11 +30,13 @@ class DiscogsServiceTest {
         val user = DiscogsUser("some-user")
 
         every { discogsClient.getCollection(user.username) } returns DiscogsResponseMother().discogsResponse(totalPages = 1)
+        every { discogsCache.store(any()) } just runs
 
         val vinylRecords = discogsService.getFullCollection(user)
         assertEquals(2, vinylRecords.size)
         assertContains(vinylRecords, SimpleVinylRecord("Abbey Road", "The Beatles", 1))
         assertContains(vinylRecords, SimpleVinylRecord("Let It Be", "The Beatles", 2))
+        verify(atLeast = 1) { discogsCache.store(any()) }
     }
 
     @Test
@@ -41,9 +46,11 @@ class DiscogsServiceTest {
         every { discogsClient.getCollection(user.username, 1) } returns DiscogsResponseMother().discogsResponse(page = 1)
         every { discogsClient.getCollection(user.username, 2) } returns DiscogsResponseMother().discogsResponse(page = 2)
         every { discogsClient.getCollection(user.username, 3) } returns DiscogsResponseMother().discogsResponse(page = 3)
+        every { discogsCache.store(any()) } just runs
 
         val vinylRecords = discogsService.getFullCollection(user)
         assertEquals(6, vinylRecords.size)
+        verify(atLeast = 3) { discogsCache.store(any()) }
     }
 
     @Test

@@ -18,6 +18,7 @@ class DiscogsService(
         do {
             currentPage++
             response = discogsClient.getCollection(user.username, currentPage)
+            response.releases.forEach { cache.store(it) }
             vinylRecords.addAll(response.toVinylRecords())
         } while (currentPage < response.pagination.pages)
 
