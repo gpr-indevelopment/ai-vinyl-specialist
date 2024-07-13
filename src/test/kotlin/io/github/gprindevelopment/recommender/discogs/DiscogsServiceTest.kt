@@ -6,6 +6,7 @@ import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import java.net.URL
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
 
@@ -17,6 +18,9 @@ class DiscogsServiceTest {
 
     @MockK
     private lateinit var discogsClient: DiscogsClient
+
+    @MockK
+    private lateinit var discogsCache: DiscogsCache
 
     @Test
     fun `Should get full collection with only vinyl records`() {
@@ -51,6 +55,28 @@ class DiscogsServiceTest {
         val vinylRecords = discogsService.getFullCollection(user)
         assertEquals(0, vinylRecords.size)
     }
+
+    @Test
+    fun `Should enrich vinyl record using in-memory cache`() {
+        val releaseId = 1
+        val record = SimpleVinylRecord("Abbey Road", "The Beatles", releaseId)
+        val expectedEnrichedRecord = EnrichedVinylRecord("Abbey Road", "The Beatles", releaseId, URL(DiscogsResponseMother.DEFAULT_COVER_IMAGE))
+
+        every { discogsCache.getRelease(releaseId) } returns DiscogsResponseMother().discogsRelease()
+        val actualEnrichedRecord = discogsService.enrichVinylRecord(record)
+        assertEquals(expectedEnrichedRecord, actualEnrichedRecord)
+    }
+
+    @Test
+    fun `Should enrich vinyl record while missing cover image data when release cached`() {
+        val releaseId = 1
+        val record = SimpleVinylRecord("Abbey Road", "The Beatles", releaseId)
+        val expectedEnrichedRecord = EnrichedVinylRecord("Abbey Road", "The Beatles", releaseId)
+
+        every { discogsCache.getRelease(releaseId) } returns null
+        val actualEnrichedRecord = discogsService.enrichVinylRecord(record)
+        assertEquals(expectedEnrichedRecord, actualEnrichedRecord)
+    }
 }
 
 class DiscogsResponseMother {
@@ -63,6 +89,23 @@ class DiscogsResponseMother {
         return DiscogsCollectionResponse(
             Pagination(1, 0, 0, 0),
             emptyList()
+        )
+    }
+
+    fun discogsRelease(): ReleaseResponse {
+        return ReleaseResponse(
+            1,
+            BasicInformation(
+                1,
+                "Abbey Road",
+                1969,
+                listOf(ArtistResponse(1, "The Beatles")),
+                listOf(LabelResponse("Apple Records", 1)),
+                listOf("Rock"),
+                listOf("Pop Rock"),
+                listOf(FormatResponse("Vinyl", "1", listOf("LP"))),
+                DEFAULT_COVER_IMAGE
+            )
         )
     }
 
