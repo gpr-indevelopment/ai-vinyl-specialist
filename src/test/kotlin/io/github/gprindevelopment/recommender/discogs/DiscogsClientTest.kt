@@ -3,6 +3,7 @@ package io.github.gprindevelopment.recommender.discogs
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import kotlin.test.assertContains
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
@@ -21,5 +22,14 @@ class DiscogsClientTest {
         assertNotNull(abbeyRoad)
         assertTrue(abbeyRoad.basicInformation.artists.any { it.name == "The Beatles" })
         assertEquals(expectedAbbeyRoadCoverImage, abbeyRoad.basicInformation.coverImage)
+    }
+
+    @Test
+    fun `Should release by ID from Discogs`() {
+        val animalsRelease = 391322
+
+        val response = discogsClient.getRelease(animalsRelease)
+        assertTrue(response.artists.any { it.name == "Pink Floyd" })
+        assertTrue(response.trackList.any { it.title == "Pigs On The Wing 1" })
     }
 }

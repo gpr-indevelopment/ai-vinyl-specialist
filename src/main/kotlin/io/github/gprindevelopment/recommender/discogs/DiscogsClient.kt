@@ -9,4 +9,7 @@ interface DiscogsClient {
 
     @GetMapping("/users/{userId}/collection/folders/0/releases?per_page=50&page={page}")
     fun getCollection(@PathVariable("userId") userId: String, @PathVariable page: Int = 1): DiscogsCollectionResponse
+
+    @GetMapping("/releases/{releaseId}")
+    fun getRelease(@PathVariable("releaseId") releaseId: Int): DiscogsReleaseResponse
 }
